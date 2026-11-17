@@ -15,7 +15,12 @@ export function Blog() {
 
   return (
     <>
-      <PageHero eyebrow="Blog" title={blogIntro.title} lead={blogIntro.lead} />
+      <PageHero
+        tone="blog"
+        eyebrow="Blog"
+        title={blogIntro.title}
+        lead={blogIntro.lead}
+      />
 
       <section className="section section--paper">
         <div className="wrap">

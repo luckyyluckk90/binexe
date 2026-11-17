@@ -22,7 +22,7 @@ export function BlogPost() {
 
   return (
     <>
-      <section className="page-hero">
+      <section className="page-hero page-hero--blog">
         <div className="wrap page-hero__inner" style={{ maxWidth: '46rem' }}>
           <p className="eyebrow">{post.category}</p>
           <h1>{post.title}</h1>

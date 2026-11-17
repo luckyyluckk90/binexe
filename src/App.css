@@ -214,7 +214,17 @@
 }
 
 .blog-featured__copy h2 {
-  font-size: clamp(1.55rem, 3vw, 2.2rem);
+  font-size: clamp(1.4rem, 2.6vw, 2rem);
+  line-height: 1.2;
+}
+
+.page-hero--blog h1 {
+  font-size: clamp(1.65rem, 3.8vw, 2.65rem);
+  line-height: 1.18;
+}
+
+.page-hero--blog .page-hero__inner {
+  gap: 0.65rem;
 }
 
 .blog-meta {
@@ -250,7 +260,8 @@
 }
 
 .blog-card__body h3 {
-  font-size: 1.15rem;
+  font-size: clamp(1.05rem, 1.5vw, 1.15rem);
+  line-height: 1.25;
 }
 
 .blog-card__body h3 a:hover {
@@ -871,6 +882,73 @@
 
   .blog-grid {
     grid-template-columns: 1fr;
+  }
+
+  .blog-featured {
+    gap: 0.85rem;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.4rem;
+  }
+
+  .blog-featured__media,
+  .blog-featured__media img {
+    min-height: 200px;
+  }
+
+  .blog-featured__copy {
+    gap: 0.4rem;
+  }
+
+  .blog-featured__copy h2 {
+    font-size: 1.32rem;
+  }
+
+  .blog-featured__copy .lede {
+    font-size: 0.98rem;
+  }
+
+  .blog-grid {
+    gap: 1.25rem;
+  }
+
+  .blog-card {
+    gap: 0.5rem;
+  }
+
+  .blog-card__body {
+    gap: 0.28rem;
+  }
+
+  .blog-card__body h3 {
+    font-size: 1.05rem;
+  }
+
+  .blog-article__media {
+    margin-bottom: 1rem;
+  }
+
+  .page-hero--blog {
+    padding: 2.4rem 0 1.35rem;
+  }
+
+  .page-hero--blog h1 {
+    font-size: clamp(1.45rem, 6vw, 1.85rem);
+  }
+
+  .page-hero--blog .lede {
+    font-size: 1rem;
+  }
+
+  .page-hero--blog + .section {
+    padding-top: 1.75rem;
+  }
+
+  .blog-article .prose {
+    gap: 0.85rem;
+  }
+
+  .blog-article .prose p {
+    font-size: 1rem;
   }
 }
 
