@@ -51,7 +51,9 @@ export async function submitEnquiry(payload: EnquiryPayload) {
 export function isEmailConfirmed(user: {
   email_confirmed_at?: string | null
   confirmed_at?: string | null
+  user_metadata?: { email_verified?: boolean } | null
 } | null) {
   if (!user) return false
-  return Boolean(user.email_confirmed_at || user.confirmed_at)
+  // Prefer the explicit auth confirmation timestamp only.
+  return Boolean(user.email_confirmed_at)
 }

@@ -40,15 +40,31 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     let mounted = true
 
-    supabase.auth.getSession().then(({ data }) => {
+    const client = supabase
+
+    client.auth.getSession().then(({ data }) => {
       if (!mounted) return
-      setSession(data.session)
+      const next = data.session
+      if (next && !isEmailConfirmed(next.user)) {
+        void client.auth.signOut({ scope: 'local' })
+        setSession(null)
+      } else {
+        setSession(next)
+      }
       setLoading(false)
     })
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, next) => {
+    } = client.auth.onAuthStateChange((_event, next) => {
+      if (!mounted) return
+      if (next && !isEmailConfirmed(next.user)) {
+        // Keep unconfirmed signups logged out until /auth/callback verifies.
+        void client.auth.signOut({ scope: 'local' })
+        setSession(null)
+        setLoading(false)
+        return
+      }
       setSession(next)
       setLoading(false)
     })
@@ -106,10 +122,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           )
         }
 
-        // Never keep an unconfirmed session — email verification is required.
-        if (data.session) {
-          await supabase.auth.signOut()
-        }
+        // Always clear any signup session so the UI stays on the confirmation
+        // screen until the email is verified via /auth/callback.
+        await supabase.auth.signOut({ scope: 'local' })
+        setSession(null)
 
         if (!data.user) {
           throw new Error('Sign up failed. Please try again.')

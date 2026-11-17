@@ -36,12 +36,14 @@ export function Signup() {
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [done, setDone] = useState(false)
+  const [awaitingEmail, setAwaitingEmail] = useState(false)
   const [info, setInfo] = useState<string | null>(null)
   const [confirmLink, setConfirmLink] = useState<string | null>(null)
   const [linkLoading, setLinkLoading] = useState(false)
 
-  if (!loading && confirmed && user) {
+  // Already signed in from a previous visit — but never leave while we are
+  // waiting for the new signup's email confirmation.
+  if (!loading && confirmed && user && !awaitingEmail) {
     return <Navigate to="/" replace />
   }
 
@@ -69,15 +71,17 @@ export function Signup() {
     setSubmitting(true)
     const trimmedEmail = email.trim()
     try {
+      // Lock the page on the confirmation step before auth state can redirect.
+      setAwaitingEmail(true)
       await signUp(trimmedEmail, password, fullName.trim())
-      setDone(true)
       notify(
         'success',
         'Kayıt başarılı',
-        'Doğrulama maili gönderildi. Gelmezse bu ekrandaki linki kullanın.',
+        'Bu ekranda kalın. E-posta onayından sonra anasayfaya gideceksiniz.',
       )
       await loadConfirmLink(trimmedEmail)
     } catch (err) {
+      setAwaitingEmail(false)
       const message = err instanceof Error ? err.message : 'Kayıt başarısız.'
       const lower = message.toLowerCase()
       const friendly =
@@ -139,18 +143,23 @@ export function Signup() {
               Authentication is not connected yet. Add Supabase keys to enable
               sign up.
             </p>
-          ) : done ? (
+          ) : awaitingEmail ? (
             <div className="form-success">
               <h2 style={{ fontSize: '1.45rem' }}>Confirm your email</h2>
               <p className="lede">
                 Registration succeeded for <strong>{email.trim()}</strong>.
-                Supabase sends the confirmation mail from its shared mailer —
-                check spam/junk. If nothing arrives, use the direct confirmation
-                link below.
+                Stay on this page. After you confirm your email, you will be
+                taken to the homepage.
+              </p>
+              <p className="form-note">
+                Check inbox and spam for the Supabase confirmation mail. If it
+                does not arrive, use the direct link below.
               </p>
               {confirmLink ? (
                 <p className="lede">
-                  <a href={confirmLink}>Confirm email and continue</a>
+                  <a className="btn btn--primary" href={confirmLink}>
+                    Confirm email and continue
+                  </a>
                 </p>
               ) : (
                 <p className="form-note">
@@ -167,7 +176,7 @@ export function Signup() {
               {info ? <p className="form-note">{info}</p> : null}
               <div className="cta-row" style={{ marginTop: '1rem' }}>
                 <button
-                  className="btn btn--primary"
+                  className="btn btn--ghost"
                   type="button"
                   disabled={submitting || linkLoading}
                   onClick={() => void handleResend()}
@@ -215,8 +224,8 @@ export function Signup() {
                 />
               </div>
               <p className="form-note">
-                After you register, stay here and confirm the email. The
-                homepage opens only after verification.
+                After you register you stay on this confirmation screen. The
+                homepage opens only after email verification.
               </p>
               {error ? (
                 <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
