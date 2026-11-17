@@ -65,6 +65,15 @@
 
 .nav-cta {
   margin-left: 0.35rem;
+  background: #087a68;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 1px 0 rgba(8, 54, 48, 0.18);
+}
+
+.nav-cta:hover {
+  background: #065f51;
+  color: #ffffff;
 }
 
 .menu-toggle {
@@ -102,11 +111,12 @@
 
 .btn--primary {
   background: var(--accent);
-  color: #f3fffc;
+  color: #ffffff;
 }
 
 .btn--primary:hover {
   background: var(--accent-deep);
+  color: #ffffff;
 }
 
 .btn--ghost {
