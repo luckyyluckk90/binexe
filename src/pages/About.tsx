@@ -30,10 +30,7 @@ export function About() {
               <p key={paragraph}>{paragraph}</p>
             ))}
             <div className="cta-row">
-              <a className="btn btn--primary" href="#services">
-                Our services
-              </a>
-              <Link className="btn btn--ghost" to="/contact">
+              <Link className="btn btn--primary" to="/contact">
                 Get in touch
               </Link>
             </div>
