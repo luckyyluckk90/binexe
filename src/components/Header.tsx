@@ -71,14 +71,12 @@ export function Header() {
             <>
               <NavLink
                 to="/login"
-                className="nav-auth"
                 onClick={() => setOpen(false)}
               >
                 Log in
               </NavLink>
               <NavLink
                 to="/signup"
-                className="btn btn--ghost nav-auth"
                 onClick={() => setOpen(false)}
               >
                 Sign up

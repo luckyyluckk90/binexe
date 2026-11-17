@@ -1,17 +1,19 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { PageHero } from '../components/PageHero'
+import { useToast } from '../components/Toast'
 import { useAuth } from '../auth/AuthContext'
 
 export function Signup() {
   const { configured, confirmed, loading, signUp, user } = useAuth()
+  const { notify } = useToast()
+  const navigate = useNavigate()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [pendingConfirm, setPendingConfirm] = useState(false)
 
   if (!loading && confirmed && user) {
     return <Navigate to="/" replace />
@@ -24,10 +26,19 @@ export function Signup() {
     try {
       const result = await signUp(email.trim(), password, fullName.trim())
       if (result === 'confirm-email') {
-        setPendingConfirm(true)
+        notify(
+          'success',
+          'Kayıt başarılı',
+          'Hesabınız oluşturuldu. Giriş için e-posta adresinizi onaylayın.',
+        )
+      } else {
+        notify('success', 'Kayıt başarılı', 'Hesabınız hazır. Ana sayfaya yönlendiriliyorsunuz.')
       }
+      navigate('/', { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to sign up.')
+      const message = err instanceof Error ? err.message : 'Kayıt başarısız.'
+      setError(message)
+      notify('error', 'Kayıt başarısız', message)
     } finally {
       setSubmitting(false)
     }
@@ -48,20 +59,6 @@ export function Signup() {
               Authentication is not connected yet. Add Supabase keys to enable
               sign up.
             </p>
-          ) : pendingConfirm ? (
-            <div className="form-success">
-              <h2 style={{ fontSize: '1.45rem' }}>Confirm your email</h2>
-              <p className="lede">
-                We sent a verification link to <strong>{email}</strong>. Open
-                that email and confirm before logging in. Access stays locked
-                until the address is verified.
-              </p>
-              <div className="cta-row">
-                <Link className="btn btn--primary" to="/login">
-                  Go to log in
-                </Link>
-              </div>
-            </div>
           ) : (
             <form className="contact-form auth-form" onSubmit={handleSubmit}>
               <div className="field">

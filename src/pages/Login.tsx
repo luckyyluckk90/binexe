@@ -2,11 +2,13 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { PageHero } from '../components/PageHero'
+import { useToast } from '../components/Toast'
 import { useAuth } from '../auth/AuthContext'
 
 export function Login() {
   const { configured, confirmed, loading, signIn, resendConfirmation, user } =
     useAuth()
+  const { notify } = useToast()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -25,9 +27,12 @@ export function Login() {
     setSubmitting(true)
     try {
       await signIn(email.trim(), password)
+      notify('success', 'Giriş başarılı', 'Ana sayfaya yönlendiriliyorsunuz.')
       navigate('/', { replace: true })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to sign in.')
+      const message = err instanceof Error ? err.message : 'Giriş başarısız.'
+      setError(message)
+      notify('error', 'Giriş başarısız', message)
     } finally {
       setSubmitting(false)
     }
@@ -44,10 +49,12 @@ export function Login() {
     try {
       await resendConfirmation(email.trim())
       setInfo('Confirmation email sent. Confirm your address, then sign in.')
+      notify('info', 'Doğrulama maili gönderildi', 'Gelen kutunuzu kontrol edin.')
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'Could not resend confirmation.',
-      )
+      const message =
+        err instanceof Error ? err.message : 'Could not resend confirmation.'
+      setError(message)
+      notify('error', 'Mail gönderilemedi', message)
     } finally {
       setSubmitting(false)
     }
