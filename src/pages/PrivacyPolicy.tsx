@@ -125,8 +125,8 @@ export function PrivacyPolicy() {
             <Link className="btn btn--primary" to="/contact">
               Contact us
             </Link>
-            <Link className="btn btn--ghost" to="/cookie-policy">
-              Cookie policy
+            <Link className="btn btn--ghost" to="/terms">
+              Terms &amp; conditions
             </Link>
           </div>
         </div>
