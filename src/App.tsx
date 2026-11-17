@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
 import { Layout } from './components/Layout'
 import { About } from './pages/About'
@@ -8,6 +8,7 @@ import { BlogPost } from './pages/BlogPost'
 import { Contact } from './pages/Contact'
 import { Home } from './pages/Home'
 import { Login } from './pages/Login'
+import { NotFound } from './pages/NotFound'
 import { ServiceDetail } from './pages/ServiceDetail'
 import { Services } from './pages/Services'
 import { Signup } from './pages/Signup'
@@ -29,7 +30,8 @@ export default function App() {
             <Route path="login" element={<Login />} />
             <Route path="signup" element={<Signup />} />
             <Route path="auth/callback" element={<AuthCallback />} />
-            <Route path="*" element={<Navigate to="/" replace />} />
+            <Route path="404" element={<NotFound />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </BrowserRouter>

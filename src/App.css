@@ -98,6 +98,23 @@
   max-width: 28rem;
 }
 
+.not-found {
+  min-height: min(70svh, 640px);
+  display: grid;
+  align-items: center;
+}
+
+.not-found__inner {
+  display: grid;
+  gap: 1rem;
+  max-width: 36rem;
+  padding: 2rem 0 1rem;
+}
+
+.not-found h1 {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+}
+
 .auth-form {
   border-top: none;
   padding-top: 0;

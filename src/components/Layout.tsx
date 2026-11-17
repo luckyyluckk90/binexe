@@ -14,6 +14,7 @@ const titles: Record<string, string> = {
   '/login': `Log in | ${brand.name}`,
   '/signup': `Sign up | ${brand.name}`,
   '/auth/callback': `Confirm email | ${brand.name}`,
+  '/404': `Page not found | ${brand.name}`,
 }
 
 export function Layout() {
@@ -40,7 +41,21 @@ export function Layout() {
       return
     }
 
-    document.title = titles[location.pathname] ?? `${brand.name}`
+    if (titles[location.pathname]) {
+      document.title = titles[location.pathname]
+      return
+    }
+
+    // Unknown routes render the custom 404 page.
+    if (
+      !location.pathname.startsWith('/services/') &&
+      !location.pathname.startsWith('/blog/')
+    ) {
+      document.title = `Page not found | ${brand.name}`
+      return
+    }
+
+    document.title = `${brand.name}`
   }, [location.pathname])
 
   return (
