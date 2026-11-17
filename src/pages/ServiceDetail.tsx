@@ -57,9 +57,10 @@ export function ServiceDetail() {
                 <p className="eyebrow">Residency by investment</p>
                 <h2>Selected residency programmes.</h2>
                 <p className="lede">
-                  Indicative timelines and thresholds for planning conversations.
-                  Final eligibility depends on programme rules and personal
-                  circumstances.
+                  Indicative thresholds reviewed against publicly available rules
+                  as of November 2026. Figures change — final eligibility,
+                  fees and processing times depend on current law and each
+                  applicant’s circumstances.
                 </p>
               </div>
               <div className="program-grid">
@@ -79,8 +80,10 @@ export function ServiceDetail() {
                 <p className="eyebrow">Citizenship by investment</p>
                 <h2>Selected citizenship programmes.</h2>
                 <p className="lede">
-                  A concise view of commonly requested pathways. We refine the
-                  shortlist after understanding your priorities.
+                  Indicative contribution levels for commonly requested
+                  pathways, reviewed November 2026. Government, diligence and
+                  professional fees sit on top. We refine the shortlist after
+                  understanding your priorities.
                 </p>
               </div>
               <div className="program-grid">

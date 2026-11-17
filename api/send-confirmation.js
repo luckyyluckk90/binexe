@@ -175,6 +175,8 @@ export default async function handler(req, res) {
         mailJson.message ||
         mailJson.error ||
         'Confirmation email could not be delivered.',
+      hint:
+        'With onboarding@resend.dev, Resend only delivers to your Resend account email until you verify a domain.',
     })
     return
   }

@@ -5,32 +5,46 @@ import { PageHero } from '../components/PageHero'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../auth/AuthContext'
 
-async function requestConfirmationEmail(email: string, fullName: string) {
+async function registerWithEmail(payload: {
+  email: string
+  password: string
+  fullName: string
+}) {
+  const response = await fetch('/api/signup', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  const data = (await response.json().catch(() => ({}))) as {
+    ok?: boolean
+    error?: string
+    hint?: string
+  }
+  if (!response.ok || !data.ok) {
+    const message = [data.error, data.hint].filter(Boolean).join(' ')
+    throw new Error(message || 'Sign up failed.')
+  }
+}
+
+async function resendConfirmationEmail(email: string, fullName: string) {
   const response = await fetch('/api/send-confirmation', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, fullName }),
   })
-  const payload = (await response.json().catch(() => ({}))) as {
+  const data = (await response.json().catch(() => ({}))) as {
     ok?: boolean
     error?: string
-    provider?: string
+    hint?: string
   }
-  if (!response.ok || !payload.ok) {
-    throw new Error(payload.error || 'Confirmation email could not be sent.')
+  if (!response.ok || !data.ok) {
+    const message = [data.error, data.hint].filter(Boolean).join(' ')
+    throw new Error(message || 'Confirmation email could not be sent.')
   }
-  return payload
 }
 
 export function Signup() {
-  const {
-    configured,
-    confirmed,
-    loading,
-    signUp,
-    resendConfirmation,
-    user,
-  } = useAuth()
+  const { configured, confirmed, loading, user } = useAuth()
   const { notify } = useToast()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
@@ -40,7 +54,6 @@ export function Signup() {
   const [awaitingEmail, setAwaitingEmail] = useState(false)
   const [info, setInfo] = useState<string | null>(null)
 
-  // Stay on this page while waiting for email confirmation.
   if (!loading && confirmed && user && !awaitingEmail) {
     return <Navigate to="/" replace />
   }
@@ -54,41 +67,24 @@ export function Signup() {
     const trimmedName = fullName.trim()
     try {
       setAwaitingEmail(true)
-      await signUp(trimmedEmail, password, trimmedName)
-
-      // Prefer our mailer (Resend) so confirmation is delivered reliably.
-      // Fallback to Supabase resend if custom mail is not configured yet.
-      try {
-        await requestConfirmationEmail(trimmedEmail, trimmedName)
-        setInfo(
-          'Doğrulama maili gönderildi. Gelen kutusu ve spam klasörünü kontrol edin. Onay linkine tıkladıktan sonra anasayfaya yönlendirileceksiniz.',
-        )
-        notify(
-          'success',
-          'Kayıt başarılı',
-          'Doğrulama maili gönderildi. Maildeki linke tıklayın.',
-        )
-      } catch {
-        await resendConfirmation(trimmedEmail)
-        setInfo(
-          'Doğrulama maili gönderildi. Gelen kutusu ve spam klasörünü kontrol edin. Onay linkine tıkladıktan sonra anasayfaya yönlendirileceksiniz.',
-        )
-        notify(
-          'success',
-          'Kayıt başarılı',
-          'Doğrulama maili gönderildi. Maildeki linke tıklayın.',
-        )
-      }
+      await registerWithEmail({
+        email: trimmedEmail,
+        password,
+        fullName: trimmedName,
+      })
+      setInfo(
+        'Doğrulama maili gönderildi. Gelen kutusu ve spam klasörünü kontrol edin. Maildeki linke tıkladıktan sonra anasayfaya yönlendirileceksiniz.',
+      )
+      notify(
+        'success',
+        'Kayıt başarılı',
+        'Doğrulama maili gönderildi. Maildeki linke tıklayın.',
+      )
     } catch (err) {
       setAwaitingEmail(false)
       const message = err instanceof Error ? err.message : 'Kayıt başarısız.'
-      const lower = message.toLowerCase()
-      const friendly =
-        lower.includes('rate limit') || lower.includes('after')
-          ? 'Çok sık mail istendi. Bir dakika bekleyip tekrar deneyin; spam klasörünü de kontrol edin.'
-          : message
-      setError(friendly)
-      notify('error', 'Kayıt başarısız', friendly)
+      setError(message)
+      notify('error', 'Kayıt başarısız', message)
     } finally {
       setSubmitting(false)
     }
@@ -102,12 +98,10 @@ export function Signup() {
     setError(null)
     setSubmitting(true)
     try {
-      try {
-        await requestConfirmationEmail(email.trim(), fullName.trim())
-      } catch {
-        await resendConfirmation(email.trim())
-      }
-      setInfo('Doğrulama maili tekrar gönderildi. Gelen kutusu ve spam’i kontrol edin.')
+      await resendConfirmationEmail(email.trim(), fullName.trim())
+      setInfo(
+        'Doğrulama maili tekrar gönderildi. Gelen kutusu ve spam klasörünü kontrol edin.',
+      )
       notify(
         'info',
         'Doğrulama maili gönderildi',
@@ -116,13 +110,8 @@ export function Signup() {
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Mail gönderilemedi.'
-      const lower = message.toLowerCase()
-      const friendly =
-        lower.includes('rate limit') || lower.includes('after')
-          ? 'Mail limiti aşıldı. Biraz bekleyip tekrar deneyin.'
-          : message
-      setError(friendly)
-      notify('error', 'Mail gönderilemedi', friendly)
+      setError(message)
+      notify('error', 'Mail gönderilemedi', message)
     } finally {
       setSubmitting(false)
     }

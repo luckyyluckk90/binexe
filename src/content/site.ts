@@ -166,38 +166,46 @@ export const sectors = [
 export const residencyPrograms = [
   {
     name: 'Greece',
-    detail: 'Residency in roughly 3–4 months. Schengen mobility. Indicative minimum investment from €250,000.',
+    detail:
+      'Golden Visa property route: from €400,000 outside prime zones, or €800,000 in Attica, Thessaloniki, Mykonos, Santorini and larger islands. Selected conversion/restoration routes from €250,000. Typical processing about 2–4 months after a complete file. Schengen mobility.',
   },
   {
     name: 'Portugal',
-    detail: 'Residency in roughly 3–4 months. Schengen mobility. Indicative minimum investment from €280,000.',
+    detail:
+      'ARI / Golden Visa (real estate closed): fund subscriptions from €500,000, or cultural/heritage support from €250,000 (€200,000 in eligible low-density areas). Current files often take 12–24+ months. Schengen mobility.',
   },
   {
     name: 'Malta',
-    detail: 'Residency in roughly 6–8 months. Schengen mobility. Indicative minimum investment from €100,000.',
+    detail:
+      'MPRP: government administration, contribution and donation about €99,000 for the main applicant, plus property purchase from €375,000 or qualifying rent from €14,000 a year (held for five years). Typical processing about 4–8 months. Schengen mobility.',
   },
 ]
 
 export const citizenshipPrograms = [
   {
     name: 'Vanuatu',
-    detail: 'Passport timeline often 45–60 days. Indicative minimum investment from $130,000. Broad visa-free access.',
+    detail:
+      'Development Support Programme commonly from about $130,000 for a single applicant. Passport timeline often around 1–2 months. Travel access is more limited than Caribbean options after recent visa-policy changes.',
   },
   {
     name: 'Grenada',
-    detail: 'Passport timeline often 3–5 months. Indicative minimum investment from $150,000.',
+    detail:
+      'National Transformation Fund from about $235,000 for the applicant and up to three dependants. Passport timeline often around 4–6 months.',
   },
   {
     name: 'Saint Kitts & Nevis',
-    detail: 'Passport timeline often 3–5 months. Indicative minimum investment from $150,000.',
+    detail:
+      'Sustainable Island State Contribution from about $250,000 for a family of up to four. Passport timeline often around 4–6 months.',
   },
   {
     name: 'Dominica',
-    detail: 'Passport timeline often 3–5 months. Indicative minimum investment from $100,000.',
+    detail:
+      'Economic Diversification Fund from about $200,000 for a single applicant, or about $250,000 covering up to three dependants. Passport timeline often around 4–6 months.',
   },
   {
     name: 'Türkiye',
-    detail: 'Passport timeline often 3–5 months. Indicative minimum investment from $250,000.',
+    detail:
+      'Real-estate route from $400,000 (three-year no-sale annotation). Other capital routes are commonly from $500,000. Citizenship timeline often around 3–6+ months after a complete file.',
   },
 ]
 
