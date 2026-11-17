@@ -1,27 +1,29 @@
 import { useState } from 'react'
 import type { FormEvent } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { PageHero } from '../components/PageHero'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../auth/AuthContext'
 
-function wait(ms: number) {
-  return new Promise<void>((resolve) => {
-    window.setTimeout(resolve, ms)
-  })
-}
-
 export function Signup() {
-  const { configured, confirmed, loading, signUp, user } = useAuth()
+  const {
+    configured,
+    confirmed,
+    loading,
+    signUp,
+    resendConfirmation,
+    user,
+  } = useAuth()
   const { notify } = useToast()
-  const navigate = useNavigate()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
+  const [info, setInfo] = useState<string | null>(null)
 
+  // Only leave signup once the email is actually confirmed.
   if (!loading && confirmed && user) {
     return <Navigate to="/" replace />
   }
@@ -29,6 +31,7 @@ export function Signup() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
+    setInfo(null)
     setSubmitting(true)
     try {
       await signUp(email.trim(), password, fullName.trim())
@@ -36,15 +39,38 @@ export function Signup() {
       notify(
         'success',
         'Kayıt başarılı',
-        'E-posta adresinize doğrulama linki gönderildi. Giriş için önce mailinizi onaylayın.',
+        'Doğrulama maili gönderildi. Bu ekranda kalın ve e-postanızı onaylayın.',
       )
-      // Let the toast appear before leaving the page.
-      await wait(2200)
-      navigate('/', { replace: true })
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Kayıt başarısız.'
       setError(message)
       notify('error', 'Kayıt başarısız', message)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  async function handleResend() {
+    if (!email.trim()) {
+      setError('Enter your email first, then resend confirmation.')
+      return
+    }
+    setError(null)
+    setInfo(null)
+    setSubmitting(true)
+    try {
+      await resendConfirmation(email.trim())
+      setInfo('Confirmation email sent again. Check your inbox and spam folder.')
+      notify(
+        'info',
+        'Doğrulama maili gönderildi',
+        'Gelen kutunuzu kontrol edin.',
+      )
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Could not resend confirmation.'
+      setError(message)
+      notify('error', 'Mail gönderilemedi', message)
     } finally {
       setSubmitting(false)
     }
@@ -55,7 +81,7 @@ export function Signup() {
       <PageHero
         eyebrow="Account"
         title="Sign up"
-        lead="Create an account. You must confirm your email before you can log in."
+        lead="Create an account. Stay on this page until you confirm your email — then you will reach the homepage."
       />
 
       <section className="section section--paper">
@@ -67,18 +93,33 @@ export function Signup() {
             </p>
           ) : done ? (
             <div className="form-success">
-              <h2 style={{ fontSize: '1.45rem' }}>Check your email</h2>
+              <h2 style={{ fontSize: '1.45rem' }}>Confirm your email</h2>
               <p className="lede">
-                Registration succeeded. Confirm the address we sent to{' '}
-                <strong>{email.trim()}</strong>, then log in. You will be taken
-                to the homepage shortly.
+                Registration succeeded. We sent a verification link to{' '}
+                <strong>{email.trim()}</strong>. Open that link to verify your
+                account — after confirmation you will be taken to the homepage.
               </p>
+              <p className="form-note">
+                Keep this tab open if you like. Confirmation happens when you
+                click the link in your email.
+              </p>
+              {error ? (
+                <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
+                  {error}
+                </p>
+              ) : null}
+              {info ? <p className="form-note">{info}</p> : null}
               <div className="cta-row" style={{ marginTop: '1rem' }}>
-                <Link className="btn btn--primary" to="/login">
+                <button
+                  className="btn btn--primary"
+                  type="button"
+                  disabled={submitting}
+                  onClick={() => void handleResend()}
+                >
+                  {submitting ? 'Sending…' : 'Resend confirmation'}
+                </button>
+                <Link className="btn btn--ghost" to="/login">
                   Go to log in
-                </Link>
-                <Link className="btn btn--ghost" to="/">
-                  Homepage
                 </Link>
               </div>
             </div>
@@ -118,8 +159,8 @@ export function Signup() {
                 />
               </div>
               <p className="form-note">
-                After you register we email a confirmation link. Login stays
-                locked until that link is opened.
+                After you register, stay here and confirm the email we send.
+                The homepage opens only after verification.
               </p>
               {error ? (
                 <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
