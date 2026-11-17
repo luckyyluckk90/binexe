@@ -12,7 +12,8 @@ export function CookiePolicy() {
       />
 
       <section className="section section--paper">
-        <div className="wrap prose legal-prose">
+        <div className="wrap">
+          <div className="prose legal-prose">
           <p>
             This cookie policy explains how {brand.name} ({legalEntity.name},
             company number {legalEntity.number}) uses cookies when you visit{' '}
@@ -81,8 +82,9 @@ export function CookiePolicy() {
           </p>
 
           <p className="form-note">Last updated: 17 November 2026</p>
+          </div>
 
-          <div className="cta-row cta-row--equal">
+          <div className="cta-row cta-row--equal cookie-actions">
             <Link className="btn btn--primary" to="/contact">
               Contact us
             </Link>
