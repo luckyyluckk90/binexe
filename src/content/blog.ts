@@ -53,7 +53,7 @@ export const blogPosts: BlogPost[] = [
     date: '2025-10-04',
     category: 'Citizenship & residency',
     image: '/blog-crypto.jpg',
-    imageAlt: 'Laptop with financial charts on a modern desk',
+    imageAlt: 'Modern candlestick chart on a digital trading screen',
     body: [
       'Crypto-native wealth creates familiar needs: banking access, travel freedom and a coherent tax residency story. Second residency or citizenship can be one tool in that toolkit — never a shortcut around compliance.',
       'Programme rules, source-of-funds evidence and valuation of digital assets require careful preparation. Early briefing avoids stalled applications later.',
@@ -68,7 +68,7 @@ export const blogPosts: BlogPost[] = [
     date: '2025-09-18',
     category: 'Licensing',
     image: '/blog-licensing.jpg',
-    imageAlt: 'Hands using a phone and laptop for digital payments',
+    imageAlt: 'Contactless payment at a modern POS terminal',
     body: [
       'A payment service provider (PSP) typically enables payment execution and related services under a payments licence. An electronic money institution (EMI) can issue electronic money and often sits under a heavier prudential and safeguarding framework.',
       'Product design, safeguarding model, target markets and capital requirements should drive the licence path — not competitor marketing slides.',
@@ -82,8 +82,8 @@ export const blogPosts: BlogPost[] = [
       'Programme adjustments reshaped popular investment routes. Here is how to read the changes without the noise.',
     date: '2025-08-30',
     category: 'Citizenship & residency',
-    image: '/blog-handshake.jpg',
-    imageAlt: 'Business professionals shaking hands after an agreement',
+    image: '/blog-lisbon.jpg',
+    imageAlt: 'Yellow tram on a sunlit street near Praça do Comércio in Lisbon',
     body: [
       'Portugal’s Golden Visa has been among the most discussed European residency-by-investment options. Rule changes over recent years have shifted emphasis away from certain real-estate routes toward other qualifying investments.',
       'Applicants should verify current eligible categories, minimums and processing expectations with up-to-date advice — archived articles and social posts go stale quickly.',
