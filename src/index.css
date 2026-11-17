@@ -1,0 +1,55 @@
+:root {
+  --bg: #d9e4e8;
+  --bg-deep: #c5d4da;
+  --ink: #102027;
+  --ink-soft: #3a5159;
+  --accent: #0f6b63;
+  --accent-hover: #0b554f;
+  --surface: rgba(255, 255, 255, 0.78);
+  --line: rgba(16, 32, 39, 0.12);
+  --font-display: "Syne", sans-serif;
+  --font-body: "Figtree", sans-serif;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  color: var(--ink);
+  background: var(--bg);
+  font-family: var(--font-body);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  min-width: 320px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 28%, white);
+}
