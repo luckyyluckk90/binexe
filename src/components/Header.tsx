@@ -23,7 +23,7 @@ function navItemActive(to: string, pathname: string, hash: string) {
 export function Header() {
   const [open, setOpen] = useState(false)
   const location = useLocation()
-  const { confirmed, loading, signOut, user } = useAuth()
+  const { confirmed, loading, user } = useAuth()
 
   return (
     <header className="site-header">
@@ -67,33 +67,21 @@ export function Header() {
           })}
 
           {!loading && confirmed && user ? (
-            <>
-              <Link
-                to="/profile"
-                onClick={() => setOpen(false)}
-                className={
-                  location.pathname === '/profile'
-                    ? 'active nav-user-link'
-                    : 'nav-user-link'
-                }
-                aria-current={
-                  location.pathname === '/profile' ? 'page' : undefined
-                }
-                title={user.email ?? undefined}
-              >
-                Profile
-              </Link>
-              <button
-                type="button"
-                className="btn btn--ghost nav-auth"
-                onClick={() => {
-                  void signOut()
-                  setOpen(false)
-                }}
-              >
-                Sign out
-              </button>
-            </>
+            <Link
+              to="/profile"
+              onClick={() => setOpen(false)}
+              className={
+                location.pathname === '/profile'
+                  ? 'active nav-user-link'
+                  : 'nav-user-link'
+              }
+              aria-current={
+                location.pathname === '/profile' ? 'page' : undefined
+              }
+              title={user.email ?? undefined}
+            >
+              Profile
+            </Link>
           ) : (
             <>
               <Link
