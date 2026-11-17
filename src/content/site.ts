@@ -38,7 +38,6 @@ export const nav = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About' },
   { to: '/about#services', label: 'Services' },
-  { to: '/blog', label: 'Blog' },
   { to: '/contact', label: 'Contact' },
 ] as const
 
@@ -251,17 +250,6 @@ export const aboutContent = {
 export const contactContent = {
   title: 'Make an enquiry',
   lead: 'Tell us what you need — company formation, licensing, HR, tax, or residency and citizenship planning. We respond with a clear next step.',
-  channels: [
-    {
-      label: 'Email',
-      value: brand.email,
-      href: `mailto:${brand.email}`,
-    },
-    {
-      label: 'Coverage',
-      value: 'United Kingdom · UAE · international clients by arrangement',
-    },
-  ],
   interests: [
     'Company Formations',
     'Citizenship & Residency',

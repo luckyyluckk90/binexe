@@ -850,6 +850,15 @@
   align-items: start;
 }
 
+.contact-shell {
+  max-width: 34rem;
+}
+
+.contact-form--solo {
+  border-top: none;
+  padding-top: 0;
+}
+
 .channel-list {
   display: grid;
   gap: 1.25rem;

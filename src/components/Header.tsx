@@ -15,9 +15,6 @@ function navItemActive(to: string, pathname: string, hash: string) {
   if (to === '/about') {
     return pathname === '/about' && hash !== '#services'
   }
-  if (to === '/blog') {
-    return pathname === '/blog' || pathname.startsWith('/blog/')
-  }
   return pathname === to || pathname.startsWith(`${to}/`)
 }
 
@@ -88,34 +85,7 @@ export function Header() {
               />
               <span>Profile</span>
             </Link>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                onClick={() => setOpen(false)}
-                className={
-                  location.pathname === '/login' ? 'active' : undefined
-                }
-                aria-current={
-                  location.pathname === '/login' ? 'page' : undefined
-                }
-              >
-                Log in
-              </Link>
-              <Link
-                to="/signup"
-                onClick={() => setOpen(false)}
-                className={
-                  location.pathname === '/signup' ? 'active' : undefined
-                }
-                aria-current={
-                  location.pathname === '/signup' ? 'page' : undefined
-                }
-              >
-                Sign up
-              </Link>
-            </>
-          )}
+          ) : null}
         </nav>
       </div>
       <span className="sr-only">{brand.domain}</span>
