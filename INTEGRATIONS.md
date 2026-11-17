@@ -75,3 +75,14 @@ npm run dev
 5. Aynı değerleri Vercel + GitHub/Bitbucket secrets’a ekle  
 
 Contact formu Supabase bağlıysa `enquiries` tablosuna yazar; değilse mailto’ya düşer.
+
+## 5) Auth (Login / Sign up + email confirmation)
+
+1. Supabase → Authentication → Providers → Email → **Confirm email: ON**
+2. Authentication → URL Configuration:
+   - Site URL: `https://binexe.vercel.app` (veya custom domain)
+   - Redirect URLs: `https://binexe.vercel.app/auth/callback`
+3. Vercel env’e `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_SITE_URL` ekle ve redeploy
+4. Site routes: `/login`, `/signup`, `/auth/callback`
+
+Kod tarafında onaylanmamış hesaplar sign-in sonrası hemen çıkışa zorlanır; login “Email not confirmed” ile reddedilir.

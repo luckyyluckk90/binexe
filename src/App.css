@@ -79,6 +79,30 @@
   color: #ffffff;
 }
 
+.nav-auth {
+  font-weight: 600;
+}
+
+.nav-user {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0 0.35rem;
+}
+
+.auth-shell {
+  max-width: 28rem;
+}
+
+.auth-form {
+  border-top: none;
+  padding-top: 0;
+}
+
 /* Blog */
 .blog-featured {
   display: grid;

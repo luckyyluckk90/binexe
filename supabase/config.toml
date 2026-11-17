@@ -10,3 +10,16 @@ port = 54321
 [db]
 port = 54322
 major_version = 15
+
+[auth]
+enabled = true
+# Require email confirmation before login is allowed.
+enable_signup = true
+enable_confirmations = true
+site_url = "http://127.0.0.1:5173"
+additional_redirect_urls = ["http://127.0.0.1:5173/auth/callback", "https://binexe.vercel.app/auth/callback", "https://binexe.com/auth/callback"]
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = true

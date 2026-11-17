@@ -5,11 +5,17 @@ const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY?.trim()
 
 export const isSupabaseConfigured = Boolean(url && anonKey)
 
+export const siteUrl =
+  import.meta.env.VITE_SITE_URL?.trim() ||
+  (typeof window !== 'undefined' ? window.location.origin : '')
+
 export const supabase: SupabaseClient | null = isSupabaseConfigured
   ? createClient(url!, anonKey!, {
       auth: {
-        persistSession: false,
-        autoRefreshToken: false,
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce',
       },
     })
   : null
@@ -40,4 +46,12 @@ export async function submitEnquiry(payload: EnquiryPayload) {
   if (error) {
     throw error
   }
+}
+
+export function isEmailConfirmed(user: {
+  email_confirmed_at?: string | null
+  confirmed_at?: string | null
+} | null) {
+  if (!user) return false
+  return Boolean(user.email_confirmed_at || user.confirmed_at)
 }
