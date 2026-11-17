@@ -58,10 +58,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = client.auth.onAuthStateChange((_event, next) => {
       if (!mounted) return
-      const onCallback =
+      const onAuthRoute =
         typeof window !== 'undefined' &&
-        window.location.pathname.startsWith('/auth/callback')
-      if (next && !isEmailConfirmed(next.user) && !onCallback) {
+        window.location.pathname.startsWith('/auth/')
+      if (next && !isEmailConfirmed(next.user) && !onAuthRoute) {
         // Keep unconfirmed signups logged out until /auth/callback verifies.
         void client.auth.signOut({ scope: 'local' })
         setSession(null)
@@ -154,6 +154,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           ) {
             throw new Error(
               'Please confirm your email before signing in. Check your inbox for the verification link.',
+            )
+          }
+          if (
+            message.includes('invalid login') ||
+            message.includes('invalid credentials')
+          ) {
+            throw new Error(
+              'Invalid login credentials. Use the exact signup email, or reset your password from the login page.',
             )
           }
           throw error

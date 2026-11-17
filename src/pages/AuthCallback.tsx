@@ -31,6 +31,12 @@ export function AuthCallback() {
         return
       }
 
+      // Capture auth type before recoverSessionFromUrl clears the hash.
+      const initialHash = new URLSearchParams(
+        window.location.hash.replace(/^#/, ''),
+      )
+      const authType = initialHash.get('type')
+
       // Implicit magic-link redirects land with #access_token=… — recover that
       // session explicitly, with a short retry while the client settles.
       let session = null
@@ -63,6 +69,12 @@ export function AuthCallback() {
       }
 
       if (session && isEmailConfirmed(session.user)) {
+        if (authType === 'recovery') {
+          setMessage('Reset link verified. Opening password form…')
+          navigate('/auth/reset-password', { replace: true })
+          return
+        }
+
         setMessage('Email confirmed. Taking you to the homepage…')
         notify(
           'success',

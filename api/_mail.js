@@ -104,13 +104,16 @@ export function testingRestrictionError() {
   }
 }
 
-export async function generateMagicLink(headers, email) {
-  const redirectTo = `${SITE_URL.replace(/\/$/, '')}/auth/callback`
+export async function generateAuthLink(headers, email, type = 'magiclink') {
+  const redirectTo =
+    type === 'recovery'
+      ? `${SITE_URL.replace(/\/$/, '')}/auth/reset-password`
+      : `${SITE_URL.replace(/\/$/, '')}/auth/callback`
   const linkRes = await fetch(`${PROJECT_URL}/auth/v1/admin/generate_link`, {
     method: 'POST',
     headers,
     body: JSON.stringify({
-      type: 'magiclink',
+      type,
       email,
       redirect_to: redirectTo,
     }),
@@ -128,16 +131,16 @@ export async function generateMagicLink(headers, email) {
   return linkJson.action_link
 }
 
-export async function sendConfirmationEmail({
+export async function generateMagicLink(headers, email) {
+  return generateAuthLink(headers, email, 'magiclink')
+}
+
+async function sendResendEmail({
   accountEmail,
-  fullName,
-  actionLink,
+  subject,
+  html,
 }) {
   const { to, rewritten } = resolveResendRecipient(accountEmail)
-  const aliasNote = rewritten
-    ? `<p style="color:#486581">Bu mail, <strong>${accountEmail}</strong> kaydını onaylamak için gönderildi.</p>`
-    : ''
-
   const mailRes = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -147,23 +150,8 @@ export async function sendConfirmationEmail({
     body: JSON.stringify({
       from: MAIL_FROM,
       to: [to],
-      subject: 'Confirm your Binexe email',
-      html: `
-        <div style="font-family:Arial,sans-serif;line-height:1.5;color:#102a43">
-          <h2>Confirm your email</h2>
-          <p>Hi ${fullName},</p>
-          ${aliasNote}
-          <p>Thanks for creating a Binexe account. Confirm your email to continue:</p>
-          <p>
-            <a href="${actionLink}"
-               style="display:inline-block;padding:12px 18px;background:#087a68;color:#fff;text-decoration:none;border-radius:4px">
-              Confirm email address
-            </a>
-          </p>
-          <p>Or open this link:<br/><a href="${actionLink}">${actionLink}</a></p>
-          <p>If you did not sign up, you can ignore this message.</p>
-        </div>
-      `,
+      subject,
+      html,
     }),
   })
   const mailJson = await mailRes.json().catch(() => ({}))
@@ -171,13 +159,73 @@ export async function sendConfirmationEmail({
     const message =
       mailJson.message ||
       mailJson.error ||
-      'Confirmation email could not be delivered.'
+      'Email could not be delivered.'
     const error = new Error(message)
     error.status = mailRes.status
     error.payload = mailJson
     throw error
   }
   return { ...mailJson, deliveredTo: to, rewritten }
+}
+
+export async function sendConfirmationEmail({
+  accountEmail,
+  fullName,
+  actionLink,
+}) {
+  const { rewritten } = resolveResendRecipient(accountEmail)
+  const aliasNote = rewritten
+    ? `<p style="color:#486581">Bu mail, <strong>${accountEmail}</strong> kaydını onaylamak için gönderildi.</p>`
+    : ''
+
+  return sendResendEmail({
+    accountEmail,
+    subject: 'Confirm your Binexe email',
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.5;color:#102a43">
+        <h2>Confirm your email</h2>
+        <p>Hi ${fullName},</p>
+        ${aliasNote}
+        <p>Thanks for creating a Binexe account. Confirm your email to continue:</p>
+        <p>
+          <a href="${actionLink}"
+             style="display:inline-block;padding:12px 18px;background:#087a68;color:#fff;text-decoration:none;border-radius:4px">
+            Confirm email address
+          </a>
+        </p>
+        <p>Or open this link:<br/><a href="${actionLink}">${actionLink}</a></p>
+        <p>If you did not sign up, you can ignore this message.</p>
+      </div>
+    `,
+  })
+}
+
+export async function sendPasswordResetEmail({ accountEmail, actionLink }) {
+  const { rewritten } = resolveResendRecipient(accountEmail)
+  const aliasNote = rewritten
+    ? `<p style="color:#486581">Bu mail, <strong>${accountEmail}</strong> hesabı için gönderildi.</p>`
+    : ''
+
+  return sendResendEmail({
+    accountEmail,
+    subject: 'Reset your Binexe password',
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.5;color:#102a43">
+        <h2>Reset your password</h2>
+        <p>Hi,</p>
+        ${aliasNote}
+        <p>We received a request to reset your Binexe password. Choose a new password with this link:</p>
+        <p>
+          <a href="${actionLink}"
+             style="display:inline-block;padding:12px 18px;background:#087a68;color:#fff;text-decoration:none;border-radius:4px">
+            Set a new password
+          </a>
+        </p>
+        <p>Or open this link:<br/><a href="${actionLink}">${actionLink}</a></p>
+        <p>If you did not request this, you can ignore this message.</p>
+      </div>
+    `,
+  })
 }
 
 export async function deleteUser(headers, userId) {
