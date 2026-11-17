@@ -49,18 +49,19 @@
 }
 
 .nav a {
-  padding: 0.55rem 0.8rem;
-  border-radius: 0.4rem;
+  padding: 0.55rem 0.55rem;
+  border-radius: 0;
   color: var(--ink-soft);
   font-weight: 600;
   font-size: 0.95rem;
-  transition: color 160ms var(--ease), background 160ms var(--ease);
+  background: transparent;
+  transition: color 160ms var(--ease);
 }
 
 .nav a:hover,
 .nav a[aria-current="page"] {
   color: var(--ink);
-  background: color-mix(in srgb, var(--accent-soft) 70%, white);
+  background: transparent;
 }
 
 .nav a.nav-cta,
