@@ -11,6 +11,8 @@ const titles: Record<string, string> = {
   '/blog': `Blog | ${brand.name}`,
   '/contact': `Contact | ${brand.name}`,
   '/cookie-policy': `Cookie policy | ${brand.name}`,
+  '/privacy-policy': `Privacy policy | ${brand.name}`,
+  '/terms': `Terms & conditions | ${brand.name}`,
   '/login': `Log in | ${brand.name}`,
   '/signup': `Sign up | ${brand.name}`,
   '/auth/callback': `Confirm email | ${brand.name}`,
@@ -21,7 +23,9 @@ export function Layout() {
   const location = useLocation()
 
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    if (!location.hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+    }
 
     const serviceMatch = location.pathname.match(/^\/services\/([^/]+)/)
     if (serviceMatch) {

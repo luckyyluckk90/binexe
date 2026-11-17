@@ -32,13 +32,13 @@ export function Footer() {
                 <Link to="/about">About</Link>
               </li>
               <li>
+                <Link to="/about#services">Services</Link>
+              </li>
+              <li>
                 <Link to="/blog">Blog</Link>
               </li>
               <li>
                 <Link to="/contact">Contact</Link>
-              </li>
-              <li>
-                <Link to="/cookie-policy">Cookie policy</Link>
               </li>
               <li>
                 <a
@@ -60,6 +60,10 @@ export function Footer() {
             <strong>{brand.name}</strong> · {brand.domain}
           </span>
           <span>
+            <Link to="/privacy-policy">Privacy policy</Link>
+            {' · '}
+            <Link to="/terms">Terms &amp; conditions</Link>
+            {' · '}
             <Link to="/cookie-policy">Cookie policy</Link>
             {' · '}© {new Date().getFullYear()} {legalEntity.name}
           </span>

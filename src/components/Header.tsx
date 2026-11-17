@@ -1,10 +1,11 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { brand, nav } from '../content/site'
 
 export function Header() {
   const [open, setOpen] = useState(false)
+  const location = useLocation()
   const { confirmed, loading, signOut, user } = useAuth()
 
   return (
@@ -43,8 +44,20 @@ export function Header() {
               <NavLink
                 key={item.to}
                 to={item.to}
-                end={item.to === '/'}
+                end={item.to === '/' || item.to === '/about'}
                 onClick={() => setOpen(false)}
+                className={({ isActive }) => {
+                  if (item.to === '/about#services') {
+                    const onServices =
+                      location.hash === '#services' ||
+                      location.pathname.startsWith('/services/')
+                    return onServices ? 'active' : undefined
+                  }
+                  if (item.to === '/about' && location.hash === '#services') {
+                    return undefined
+                  }
+                  return isActive ? 'active' : undefined
+                }}
               >
                 {item.label}
               </NavLink>

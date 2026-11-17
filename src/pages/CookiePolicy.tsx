@@ -88,14 +88,9 @@ export function CookiePolicy() {
             <Link className="btn btn--primary" to="/contact">
               Contact us
             </Link>
-            <a
-              className="btn btn--ghost"
-              href={legalEntity.companiesHouseUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Companies House
-            </a>
+            <Link className="btn btn--ghost" to="/privacy-policy">
+              Privacy policy
+            </Link>
           </div>
         </div>
       </section>

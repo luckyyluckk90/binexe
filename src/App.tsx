@@ -11,8 +11,10 @@ import { CookiePolicy } from './pages/CookiePolicy'
 import { Home } from './pages/Home'
 import { Login } from './pages/Login'
 import { NotFound } from './pages/NotFound'
+import { PrivacyPolicy } from './pages/PrivacyPolicy'
 import { ServiceDetail } from './pages/ServiceDetail'
 import { Signup } from './pages/Signup'
+import { Terms } from './pages/Terms'
 import './App.css'
 
 export default function App() {
@@ -30,6 +32,8 @@ export default function App() {
               <Route path="blog/:slug" element={<BlogPost />} />
               <Route path="contact" element={<Contact />} />
               <Route path="cookie-policy" element={<CookiePolicy />} />
+              <Route path="privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="terms" element={<Terms />} />
               <Route path="login" element={<Login />} />
               <Route path="signup" element={<Signup />} />
               <Route path="auth/callback" element={<AuthCallback />} />

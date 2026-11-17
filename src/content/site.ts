@@ -37,6 +37,7 @@ export const legalEntity = {
 export const nav = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About' },
+  { to: '/about#services', label: 'Services' },
   { to: '/blog', label: 'Blog' },
   { to: '/contact', label: 'Contact' },
 ] as const
