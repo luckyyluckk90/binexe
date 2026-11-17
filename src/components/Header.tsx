@@ -68,9 +68,21 @@ export function Header() {
 
           {!loading && confirmed && user ? (
             <>
-              <span className="nav-user" title={user.email ?? undefined}>
-                {user.email}
-              </span>
+              <Link
+                to="/profile"
+                onClick={() => setOpen(false)}
+                className={
+                  location.pathname === '/profile'
+                    ? 'active nav-user-link'
+                    : 'nav-user-link'
+                }
+                aria-current={
+                  location.pathname === '/profile' ? 'page' : undefined
+                }
+                title={user.email ?? undefined}
+              >
+                Profile
+              </Link>
               <button
                 type="button"
                 className="btn btn--ghost nav-auth"

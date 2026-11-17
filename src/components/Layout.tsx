@@ -15,6 +15,7 @@ const titles: Record<string, string> = {
   '/terms': `Terms & conditions | ${brand.name}`,
   '/login': `Log in | ${brand.name}`,
   '/signup': `Sign up | ${brand.name}`,
+  '/profile': `Profile | ${brand.name}`,
   '/auth/callback': `Confirm email | ${brand.name}`,
   '/auth/reset-password': `Reset password | ${brand.name}`,
   '/404': `Page not found | ${brand.name}`,

@@ -24,6 +24,8 @@ type AuthContextValue = {
   signIn: (email: string, password: string) => Promise<void>
   signOut: () => Promise<void>
   resendConfirmation: (email: string) => Promise<void>
+  updateProfile: (fullName: string) => Promise<void>
+  updatePassword: (password: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
@@ -199,6 +201,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
           throw error
         }
+      },
+      async updateProfile(fullName) {
+        if (!supabase) {
+          throw new Error('Authentication is not configured yet.')
+        }
+        const trimmed = fullName.trim()
+        if (!trimmed) {
+          throw new Error('Full name is required.')
+        }
+        const { data, error } = await supabase.auth.updateUser({
+          data: { full_name: trimmed },
+        })
+        if (error) throw error
+        if (data.user) {
+          setSession((current) =>
+            current
+              ? {
+                  ...current,
+                  user: data.user,
+                }
+              : current,
+          )
+        }
+      },
+      async updatePassword(password) {
+        if (!supabase) {
+          throw new Error('Authentication is not configured yet.')
+        }
+        if (password.length < 8) {
+          throw new Error('Password must be at least 8 characters.')
+        }
+        const { error } = await supabase.auth.updateUser({ password })
+        if (error) throw error
       },
     }
   }, [loading, session])

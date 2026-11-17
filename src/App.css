@@ -80,8 +80,60 @@
   padding: 0 0.35rem;
 }
 
+.nav-user-link {
+  font-weight: 600;
+}
+
 .auth-shell {
   max-width: 28rem;
+}
+
+.profile-shell {
+  max-width: 34rem;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.profile-summary {
+  display: grid;
+  gap: 0.55rem;
+  padding-bottom: 0.35rem;
+}
+
+.profile-summary h2 {
+  font-size: clamp(1.45rem, 3vw, 1.9rem);
+  line-height: 1.2;
+}
+
+.profile-meta {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0.65rem 0 0;
+}
+
+.profile-meta div {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.profile-meta dt {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.profile-meta dd {
+  margin: 0;
+  font-weight: 600;
+}
+
+.profile-form__title {
+  font-size: 1.15rem;
+  margin: 0;
 }
 
 .not-found {

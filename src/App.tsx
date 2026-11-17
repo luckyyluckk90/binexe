@@ -12,6 +12,7 @@ import { Home } from './pages/Home'
 import { Login } from './pages/Login'
 import { NotFound } from './pages/NotFound'
 import { PrivacyPolicy } from './pages/PrivacyPolicy'
+import { Profile } from './pages/Profile'
 import { ResetPassword } from './pages/ResetPassword'
 import { ServiceDetail } from './pages/ServiceDetail'
 import { Signup } from './pages/Signup'
@@ -37,6 +38,7 @@ export default function App() {
               <Route path="terms" element={<Terms />} />
               <Route path="login" element={<Login />} />
               <Route path="signup" element={<Signup />} />
+              <Route path="profile" element={<Profile />} />
               <Route path="auth/callback" element={<AuthCallback />} />
               <Route path="auth/reset-password" element={<ResetPassword />} />
               <Route path="404" element={<NotFound />} />
