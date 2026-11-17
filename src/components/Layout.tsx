@@ -11,6 +11,7 @@ const titles: Record<string, string> = {
   '/about': `About | ${brand.name}`,
   '/blog': `Blog | ${brand.name}`,
   '/contact': `Contact | ${brand.name}`,
+  '/cookie-policy': `Cookie policy | ${brand.name}`,
   '/login': `Log in | ${brand.name}`,
   '/signup': `Sign up | ${brand.name}`,
   '/auth/callback': `Confirm email | ${brand.name}`,

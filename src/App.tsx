@@ -7,6 +7,7 @@ import { AuthCallback } from './pages/AuthCallback'
 import { Blog } from './pages/Blog'
 import { BlogPost } from './pages/BlogPost'
 import { Contact } from './pages/Contact'
+import { CookiePolicy } from './pages/CookiePolicy'
 import { Home } from './pages/Home'
 import { Login } from './pages/Login'
 import { NotFound } from './pages/NotFound'
@@ -29,6 +30,7 @@ export default function App() {
               <Route path="blog" element={<Blog />} />
               <Route path="blog/:slug" element={<BlogPost />} />
               <Route path="contact" element={<Contact />} />
+              <Route path="cookie-policy" element={<CookiePolicy />} />
               <Route path="login" element={<Login />} />
               <Route path="signup" element={<Signup />} />
               <Route path="auth/callback" element={<AuthCallback />} />

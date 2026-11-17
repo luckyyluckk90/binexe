@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { brand, services } from '../content/site'
+import { brand, legalEntity, services } from '../content/site'
 
 export function Footer() {
   return (
@@ -9,6 +9,11 @@ export function Footer() {
           <div>
             <h2>{brand.name}</h2>
             <p>{brand.tagline}</p>
+            <p className="footer-legal">
+              {legalEntity.name} · Company No. {legalEntity.number}
+              <br />
+              {legalEntity.registeredOffice}
+            </p>
           </div>
           <div>
             <h2>Services</h2>
@@ -33,6 +38,18 @@ export function Footer() {
                 <Link to="/contact">Contact</Link>
               </li>
               <li>
+                <Link to="/cookie-policy">Cookie policy</Link>
+              </li>
+              <li>
+                <a
+                  href={legalEntity.companiesHouseUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Companies House
+                </a>
+              </li>
+              <li>
                 <a href={`mailto:${brand.email}`}>{brand.email}</a>
               </li>
             </ul>
@@ -42,7 +59,10 @@ export function Footer() {
           <span>
             <strong>{brand.name}</strong> · {brand.domain}
           </span>
-          <span>© {new Date().getFullYear()} All rights reserved</span>
+          <span>
+            <Link to="/cookie-policy">Cookie policy</Link>
+            {' · '}© {new Date().getFullYear()} {legalEntity.name}
+          </span>
         </div>
       </div>
     </footer>

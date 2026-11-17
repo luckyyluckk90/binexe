@@ -24,6 +24,16 @@ export const brand = {
   tagline: 'Professional services for companies and private clients.',
 }
 
+export const legalEntity = {
+  name: 'BX MANAGED SERVICES LIMITED',
+  number: '17585013',
+  registeredOffice: 'Flat 6, 50 Britannia Street, London, England, WC1X 9JH',
+  status: 'Active',
+  incorporatedOn: '17 November 2026',
+  companiesHouseUrl:
+    'https://find-and-update.company-information.service.gov.uk/company/17585013',
+}
+
 export const nav = [
   { to: '/', label: 'Home' },
   { to: '/services', label: 'Services' },
