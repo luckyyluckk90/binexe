@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import { Avatar } from './Avatar'
 import { brand, nav } from '../content/site'
 
 function navItemActive(to: string, pathname: string, hash: string) {
@@ -80,7 +81,12 @@ export function Header() {
               }
               title={user.email ?? undefined}
             >
-              Profile
+              <Avatar
+                size="sm"
+                name={String(user.user_metadata?.full_name || '')}
+                email={user.email}
+              />
+              <span>Profile</span>
             </Link>
           ) : (
             <>

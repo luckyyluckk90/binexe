@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Avatar } from '../components/Avatar'
 import { PageHero } from '../components/PageHero'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../auth/AuthContext'
@@ -117,9 +118,22 @@ export function Profile() {
       <section className="section section--paper">
         <div className="wrap profile-shell">
           <div className="profile-summary">
-            <p className="eyebrow">Signed in</p>
-            <h2>{currentName || 'Binexe member'}</h2>
-            <p className="lede">{user.email}</p>
+            <div className="profile-identity">
+              <Avatar
+                size="lg"
+                name={currentName}
+                email={user.email}
+                className="profile-avatar"
+              />
+              <div className="profile-identity__copy">
+                <p className="profile-presence">
+                  <span className="profile-presence__dot" aria-hidden="true" />
+                  Signed in now
+                </p>
+                <h2>{currentName || 'Binexe member'}</h2>
+                <p className="lede">{user.email}</p>
+              </div>
+            </div>
             <dl className="profile-meta">
               <div>
                 <dt>Email status</dt>
