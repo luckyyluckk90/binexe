@@ -2,20 +2,48 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { PageHero } from '../components/PageHero'
 import { brand, contactContent } from '../content/site'
+import { isSupabaseConfigured, submitEnquiry } from '../lib/supabase'
 
 export function Contact() {
   const [sent, setSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    setError(null)
+
     const form = event.currentTarget
     const data = new FormData(form)
     const interest = String(data.get('interest') || 'General enquiry')
     const name = String(data.get('name') || '')
+    const email = String(data.get('email') || '')
     const message = String(data.get('message') || '')
+
+    if (isSupabaseConfigured) {
+      try {
+        setSubmitting(true)
+        await submitEnquiry({
+          full_name: name,
+          email,
+          interest,
+          message,
+        })
+        setSent(true)
+        form.reset()
+      } catch (err) {
+        const detail =
+          err instanceof Error ? err.message : 'Unable to send enquiry right now.'
+        setError(detail)
+      } finally {
+        setSubmitting(false)
+      }
+      return
+    }
+
     const subject = encodeURIComponent(`Binexe enquiry — ${interest}`)
     const body = encodeURIComponent(
-      `Name: ${name}\nInterest: ${interest}\n\n${message}`,
+      `Name: ${name}\nEmail: ${email}\nInterest: ${interest}\n\n${message}`,
     )
     setSent(true)
     window.location.href = `mailto:${brand.email}?subject=${subject}&body=${body}`
@@ -61,9 +89,9 @@ export function Contact() {
               <div className="form-success">
                 <h2 style={{ fontSize: '1.45rem' }}>Thank you</h2>
                 <p className="lede">
-                  Your email client should open with the enquiry details. If it
-                  does not, write to{' '}
-                  <a href={`mailto:${brand.email}`}>{brand.email}</a>.
+                  {isSupabaseConfigured
+                    ? 'Your enquiry has been received. We will get back to you shortly.'
+                    : `Your email client should open with the enquiry details. If it does not, write to ${brand.email}.`}
                 </p>
               </div>
             ) : (
@@ -84,7 +112,7 @@ export function Contact() {
                 </div>
                 <div className="field">
                   <label htmlFor="interest">Looking for</label>
-                  <select id="interest" name="interest" defaultValue="">
+                  <select id="interest" name="interest" defaultValue="" required>
                     <option value="" disabled>
                       Select a service
                     </option>
@@ -100,11 +128,21 @@ export function Contact() {
                   <textarea id="message" name="message" required />
                 </div>
                 <p className="form-note">
-                  Submitting opens an email to {brand.email}. No account is
-                  created and nothing is stored on this page.
+                  {isSupabaseConfigured
+                    ? 'Messages are stored securely for the Binexe team to review.'
+                    : `Supabase is not connected yet — submit opens an email to ${brand.email}.`}
                 </p>
-                <button className="btn btn--primary" type="submit">
-                  Send message
+                {error ? (
+                  <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
+                    {error}
+                  </p>
+                ) : null}
+                <button
+                  className="btn btn--primary"
+                  type="submit"
+                  disabled={submitting}
+                >
+                  {submitting ? 'Sending…' : 'Send message'}
                 </button>
               </form>
             )}

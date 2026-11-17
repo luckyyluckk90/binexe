@@ -1,0 +1,12 @@
+# Minimal Supabase project config for local CLI use.
+# Link a remote project with: supabase link --project-ref <ref>
+
+project_id = "binexe"
+
+[api]
+enabled = true
+port = 54321
+
+[db]
+port = 54322
+major_version = 15

@@ -1,0 +1,41 @@
+image: node:22
+
+definitions:
+  caches:
+    npm: ~/.npm
+  steps:
+    - step: &build
+        name: Build
+        caches:
+          - npm
+        script:
+          - npm ci
+          - npm run build
+        artifacts:
+          - dist/**
+
+pipelines:
+  default:
+    - step: *build
+
+  branches:
+    main:
+      - step: *build
+      - step:
+          name: Deploy to Vercel
+          deployment: production
+          script:
+            - npm install -g vercel@latest
+            - vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+            - vercel build --prod --token="$VERCEL_TOKEN"
+            - vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
+    master:
+      - step: *build
+      - step:
+          name: Deploy to Vercel
+          deployment: production
+          script:
+            - npm install -g vercel@latest
+            - vercel pull --yes --environment=production --token="$VERCEL_TOKEN"
+            - vercel build --prod --token="$VERCEL_TOKEN"
+            - vercel deploy --prebuilt --prod --token="$VERCEL_TOKEN"
