@@ -27,23 +27,27 @@ export function Header() {
           className={`nav${open ? ' is-open' : ''}`}
           aria-label="Primary"
         >
-          {nav.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              end={item.to === '/'}
-              onClick={() => setOpen(false)}
-            >
-              {item.label}
-            </NavLink>
-          ))}
-          <Link
-            className="btn btn--primary nav-cta"
-            to="/contact"
-            onClick={() => setOpen(false)}
-          >
-            Enquire
-          </Link>
+          {nav.map((item) =>
+            item.to === '/blog' ? (
+              <NavLink
+                key={item.to}
+                className="btn btn--primary nav-cta"
+                to={item.to}
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </NavLink>
+            ) : (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                end={item.to === '/'}
+                onClick={() => setOpen(false)}
+              >
+                {item.label}
+              </NavLink>
+            ),
+          )}
         </nav>
       </div>
       <span className="sr-only">{brand.domain}</span>

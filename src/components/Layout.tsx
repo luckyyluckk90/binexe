@@ -3,11 +3,13 @@ import { useEffect } from 'react'
 import { Footer } from './Footer'
 import { Header } from './Header'
 import { brand, getService } from '../content/site'
+import { getPost } from '../content/blog'
 
 const titles: Record<string, string> = {
   '/': `${brand.name} — Professional Services`,
   '/services': `Services | ${brand.name}`,
   '/about': `About | ${brand.name}`,
+  '/blog': `Blog | ${brand.name}`,
   '/contact': `Contact | ${brand.name}`,
 }
 
@@ -25,6 +27,16 @@ export function Layout() {
         : `Services | ${brand.name}`
       return
     }
+
+    const blogMatch = location.pathname.match(/^\/blog\/([^/]+)/)
+    if (blogMatch) {
+      const post = getPost(blogMatch[1])
+      document.title = post
+        ? `${post.title} | ${brand.name}`
+        : `Blog | ${brand.name}`
+      return
+    }
+
     document.title = titles[location.pathname] ?? `${brand.name}`
   }, [location.pathname])
 
