@@ -86,13 +86,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (error) throw error
 
-        // Defensive: never keep an unconfirmed session locally.
-        if (data.session && !isEmailConfirmed(data.user)) {
+        // Supabase may return a user with empty identities when the email
+        // already exists — treat that as a failed / blocked signup.
+        if (
+          data.user &&
+          Array.isArray(data.user.identities) &&
+          data.user.identities.length === 0
+        ) {
+          throw new Error(
+            'This email is already registered. Confirm your inbox or log in.',
+          )
+        }
+
+        // Never keep an unconfirmed session — email verification is required.
+        if (data.session) {
           await supabase.auth.signOut()
         }
 
-        if (data.user && isEmailConfirmed(data.user) && data.session) {
-          return 'signed-in'
+        if (!data.user) {
+          throw new Error('Sign up failed. Please try again.')
         }
 
         return 'confirm-email'

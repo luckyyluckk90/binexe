@@ -5,6 +5,12 @@ import { PageHero } from '../components/PageHero'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../auth/AuthContext'
 
+function wait(ms: number) {
+  return new Promise<void>((resolve) => {
+    window.setTimeout(resolve, ms)
+  })
+}
+
 export function Login() {
   const { configured, confirmed, loading, signIn, resendConfirmation, user } =
     useAuth()
@@ -28,6 +34,7 @@ export function Login() {
     try {
       await signIn(email.trim(), password)
       notify('success', 'Giriş başarılı', 'Ana sayfaya yönlendiriliyorsunuz.')
+      await wait(1600)
       navigate('/', { replace: true })
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Giriş başarısız.'
