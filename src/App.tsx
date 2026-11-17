@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
 import { ToastProvider } from './components/Toast'
 import { Layout } from './components/Layout'
@@ -12,7 +12,6 @@ import { Home } from './pages/Home'
 import { Login } from './pages/Login'
 import { NotFound } from './pages/NotFound'
 import { ServiceDetail } from './pages/ServiceDetail'
-import { Services } from './pages/Services'
 import { Signup } from './pages/Signup'
 import './App.css'
 
@@ -24,7 +23,7 @@ export default function App() {
           <Routes>
             <Route element={<Layout />}>
               <Route index element={<Home />} />
-              <Route path="services" element={<Services />} />
+              <Route path="services" element={<Navigate to="/about#services" replace />} />
               <Route path="services/:slug" element={<ServiceDetail />} />
               <Route path="about" element={<About />} />
               <Route path="blog" element={<Blog />} />

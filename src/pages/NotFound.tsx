@@ -14,7 +14,7 @@ export function NotFound() {
           <Link className="btn btn--primary" to="/">
             Back to home
           </Link>
-          <Link className="btn btn--ghost" to="/services">
+          <Link className="btn btn--ghost" to="/about#services">
             View services
           </Link>
           <Link className="btn btn--ghost" to="/contact">

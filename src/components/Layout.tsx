@@ -7,7 +7,6 @@ import { getPost } from '../content/blog'
 
 const titles: Record<string, string> = {
   '/': `${brand.name} — Professional Services`,
-  '/services': `Services | ${brand.name}`,
   '/about': `About | ${brand.name}`,
   '/blog': `Blog | ${brand.name}`,
   '/contact': `Contact | ${brand.name}`,

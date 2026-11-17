@@ -50,7 +50,7 @@ export function Home() {
             licensing — delivered with calm, corporate clarity.
           </motion.p>
           <motion.div className="cta-row" {...rise(0.4)}>
-            <Link className="btn btn--primary" to="/services">
+            <Link className="btn btn--primary" to="/about#services">
               Explore services
             </Link>
             <Link className="btn btn--ghost" to="/contact">

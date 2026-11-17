@@ -13,7 +13,7 @@ export function ServiceDetail() {
   const service = getService(slug)
 
   if (!service) {
-    return <Navigate to="/services" replace />
+    return <Navigate to="/about#services" replace />
   }
 
   return (
@@ -42,7 +42,7 @@ export function ServiceDetail() {
             <Link className="btn btn--primary" to="/contact">
               {service.cta}
             </Link>
-            <Link className="btn btn--ghost" to="/services">
+            <Link className="btn btn--ghost" to="/about#services">
               All services
             </Link>
           </div>

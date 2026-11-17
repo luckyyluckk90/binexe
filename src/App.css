@@ -422,6 +422,20 @@
   margin-top: 0.35rem;
 }
 
+.cta-row--equal .btn {
+  min-width: 11.5rem;
+  justify-content: center;
+}
+
+.legal-prose .cta-row {
+  margin-top: 1.5rem;
+}
+
+.legal-prose .btn {
+  text-decoration: none;
+  font-weight: 600;
+}
+
 /* Sections */
 .section {
   padding: clamp(3.5rem, 7vw, 5.5rem) 0;

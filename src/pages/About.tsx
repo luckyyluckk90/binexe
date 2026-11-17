@@ -1,9 +1,20 @@
-import { Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { CtaBand } from '../components/CtaBand'
 import { PageHero } from '../components/PageHero'
-import { aboutContent } from '../content/site'
+import { aboutContent, services } from '../content/site'
 
 export function About() {
+  const location = useLocation()
+
+  useEffect(() => {
+    if (location.hash !== '#services') return
+    const target = document.getElementById('services')
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }, [location.hash])
+
   return (
     <>
       <PageHero
@@ -19,9 +30,9 @@ export function About() {
               <p key={paragraph}>{paragraph}</p>
             ))}
             <div className="cta-row">
-              <Link className="btn btn--primary" to="/services">
-                View services
-              </Link>
+              <a className="btn btn--primary" href="#services">
+                Our services
+              </a>
               <Link className="btn btn--ghost" to="/contact">
                 Get in touch
               </Link>
@@ -39,7 +50,37 @@ export function About() {
         </div>
       </section>
 
-      <section className="section section--muted">
+      <section id="services" className="section section--muted">
+        <div className="wrap">
+          <div className="section__head">
+            <p className="eyebrow">Services</p>
+            <h2>A full suite of professional services.</h2>
+            <p className="lede">
+              Company formations, citizenship and residency, human resources, tax
+              and accounting, and regulated licensing — organised for clarity.
+            </p>
+          </div>
+          <div className="service-list">
+            {services.map((service) => (
+              <article className="service-row" key={service.slug}>
+                <div>
+                  <p className="eyebrow">{service.eyebrow}</p>
+                  <h3 style={{ marginTop: '0.35rem' }}>{service.navLabel}</h3>
+                </div>
+                <p>{service.summary}</p>
+                <Link
+                  className="service-row__link"
+                  to={`/services/${service.slug}`}
+                >
+                  Learn more
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--paper">
         <div className="wrap">
           <div className="section__head">
             <p className="eyebrow">How we support clients</p>

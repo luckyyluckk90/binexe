@@ -82,7 +82,7 @@ export function CookiePolicy() {
 
           <p className="form-note">Last updated: 17 November 2026</p>
 
-          <div className="cta-row">
+          <div className="cta-row cta-row--equal">
             <Link className="btn btn--primary" to="/contact">
               Contact us
             </Link>
@@ -92,7 +92,7 @@ export function CookiePolicy() {
               target="_blank"
               rel="noreferrer"
             >
-              Companies House record
+              Companies House
             </a>
           </div>
         </div>
