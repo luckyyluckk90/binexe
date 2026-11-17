@@ -1,69 +1,13 @@
-const PROJECT_URL =
-  process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || ''
-const SERVICE_ROLE =
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || ''
-const SITE_URL = process.env.VITE_SITE_URL || 'https://binexe.vercel.app'
-const RESEND_API_KEY = process.env.RESEND_API_KEY || ''
-const MAIL_FROM =
-  process.env.MAIL_FROM || 'Binexe <onboarding@resend.dev>'
-
-function send(res, status, payload) {
-  res.statusCode = status
-  res.setHeader('Content-Type', 'application/json')
-  res.end(JSON.stringify(payload))
-}
-
-async function readJson(req) {
-  if (req.body && typeof req.body === 'object') return req.body
-  if (typeof req.body === 'string' && req.body.trim()) {
-    return JSON.parse(req.body)
-  }
-  const chunks = []
-  for await (const chunk of req) chunks.push(chunk)
-  const raw = Buffer.concat(chunks).toString('utf8').trim()
-  return raw ? JSON.parse(raw) : {}
-}
-
-async function sendConfirmationEmail({ email, fullName, actionLink }) {
-  const mailRes = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${RESEND_API_KEY}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from: MAIL_FROM,
-      to: [email],
-      subject: 'Confirm your Binexe email',
-      html: `
-        <div style="font-family:Arial,sans-serif;line-height:1.5;color:#102a43">
-          <h2>Confirm your email</h2>
-          <p>Hi ${fullName},</p>
-          <p>Thanks for creating a Binexe account. Confirm your email to continue:</p>
-          <p>
-            <a href="${actionLink}"
-               style="display:inline-block;padding:12px 18px;background:#087a68;color:#fff;text-decoration:none;border-radius:4px">
-              Confirm email address
-            </a>
-          </p>
-          <p>Or open this link:<br/><a href="${actionLink}">${actionLink}</a></p>
-          <p>If you did not sign up, you can ignore this message.</p>
-        </div>
-      `,
-    }),
-  })
-  const mailJson = await mailRes.json().catch(() => ({}))
-  if (!mailRes.ok) {
-    const message =
-      mailJson.message ||
-      mailJson.error ||
-      'Confirmation email could not be delivered.'
-    const error = new Error(message)
-    error.status = mailRes.status
-    throw error
-  }
-  return mailJson
-}
+import {
+  deleteUser,
+  generateMagicLink,
+  isResendTestingRestriction,
+  mailConfig,
+  readJson,
+  sendConfirmationEmail,
+  sendJson,
+  testingRestrictionError,
+} from './_mail.js'
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
@@ -77,16 +21,18 @@ export default async function handler(req, res) {
   }
 
   if (req.method !== 'POST') {
-    send(res, 405, { error: 'Method not allowed' })
+    sendJson(res, 405, { error: 'Method not allowed' })
     return
   }
 
+  const { PROJECT_URL, SERVICE_ROLE, RESEND_API_KEY } = mailConfig()
+
   if (!PROJECT_URL || !SERVICE_ROLE) {
-    send(res, 500, { error: 'Authentication service is not configured.' })
+    sendJson(res, 500, { error: 'Authentication service is not configured.' })
     return
   }
   if (!RESEND_API_KEY) {
-    send(res, 503, {
+    sendJson(res, 503, {
       error: 'Email delivery is not configured (missing RESEND_API_KEY).',
     })
     return
@@ -96,7 +42,7 @@ export default async function handler(req, res) {
   try {
     body = await readJson(req)
   } catch {
-    send(res, 400, { error: 'Invalid JSON body.' })
+    sendJson(res, 400, { error: 'Invalid JSON body.' })
     return
   }
 
@@ -107,11 +53,11 @@ export default async function handler(req, res) {
   const fullName = String(body.fullName || '').trim() || 'there'
 
   if (!email || !email.includes('@')) {
-    send(res, 400, { error: 'A valid email is required.' })
+    sendJson(res, 400, { error: 'A valid email is required.' })
     return
   }
   if (password.length < 8) {
-    send(res, 400, { error: 'Password must be at least 8 characters.' })
+    sendJson(res, 400, { error: 'Password must be at least 8 characters.' })
     return
   }
 
@@ -140,57 +86,48 @@ export default async function handler(req, res) {
       message.toLowerCase().includes('already') ||
       message.toLowerCase().includes('registered')
     ) {
-      send(res, 409, {
-        error: 'This email is already registered. Confirm your inbox or log in.',
+      sendJson(res, 409, {
+        error:
+          'Bu e-posta zaten kayıtlı. Gelen kutunuzdaki doğrulama mailini kontrol edin veya giriş yapın.',
       })
       return
     }
-    send(res, 502, {
+    sendJson(res, 502, {
       error: message || 'Could not create account.',
     })
     return
   }
 
-  const redirectTo = `${SITE_URL.replace(/\/$/, '')}/auth/callback`
-  const linkRes = await fetch(`${PROJECT_URL}/auth/v1/admin/generate_link`, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      type: 'magiclink',
-      email,
-      redirect_to: redirectTo,
-    }),
-  })
-  const linkJson = await linkRes.json().catch(() => ({}))
-  if (!linkRes.ok || !linkJson.action_link) {
-    send(res, 502, {
-      error:
-        linkJson.msg ||
-        linkJson.message ||
-        'Account created, but confirmation link could not be generated.',
-    })
-    return
-  }
+  const userId = createJson.id || createJson.user?.id
 
   try {
+    const actionLink = await generateMagicLink(headers, email)
     const mail = await sendConfirmationEmail({
-      email,
+      accountEmail: email,
       fullName,
-      actionLink: linkJson.action_link,
+      actionLink,
     })
-    send(res, 200, {
+    sendJson(res, 200, {
       ok: true,
       email,
       provider: 'resend',
       id: mail.id || null,
+      deliveredTo: mail.deliveredTo || email,
     })
   } catch (err) {
+    // Avoid leaving orphan accounts that block retries with "already registered".
+    await deleteUser(headers, userId)
+
     const message =
       err instanceof Error ? err.message : 'Confirmation email could not be sent.'
-    send(res, 502, {
+    if (isResendTestingRestriction(message)) {
+      sendJson(res, 502, testingRestrictionError())
+      return
+    }
+    sendJson(res, 502, {
       error: message,
       hint:
-        'If using onboarding@resend.dev, Resend only delivers to your account email until a domain is verified.',
+        'Mail gönderilemedi. Birkaç dakika sonra tekrar deneyin veya spam klasörünü kontrol edin.',
     })
   }
 }

@@ -82,7 +82,15 @@ Contact formu Supabase bağlıysa `enquiries` tablosuna yazar; değilse mailto�
 2. Authentication → URL Configuration:
    - Site URL: `https://binexe.vercel.app` (veya custom domain)
    - Redirect URLs: `https://binexe.vercel.app/auth/callback`
-3. Vercel env’e `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_SITE_URL` ekle ve redeploy
+3. Vercel env’e ekle ve redeploy:
+   - `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_SITE_URL`
+   - `SUPABASE_SERVICE_ROLE_KEY`
+   - `RESEND_API_KEY`
+   - `RESEND_ALLOWED_TO` (Resend hesap e-postası; test modunda zorunlu)
+   - İsteğe bağlı: `MAIL_FROM` (domain doğrulanınca `Binexe <noreply@alanadiniz.com>`)
 4. Site routes: `/login`, `/signup`, `/auth/callback`
+
+Kayıt `/api/signup` üzerinden Resend ile doğrulama maili gönderir.  
+`onboarding@resend.dev` kullanırken Resend yalnızca `RESEND_ALLOWED_TO` adresine (ve aynı Gmail +alias’larına) teslim eder. Herkese mail için [resend.com/domains](https://resend.com/domains) üzerinden alan adı doğrula ve `MAIL_FROM`’u o domain’e çevir.
 
 Kod tarafında onaylanmamış hesaplar sign-in sonrası hemen çıkışa zorlanır; login “Email not confirmed” ile reddedilir.
