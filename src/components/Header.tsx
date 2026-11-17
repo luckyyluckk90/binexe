@@ -1,7 +1,24 @@
 import { useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { brand, nav } from '../content/site'
+
+function navItemActive(to: string, pathname: string, hash: string) {
+  if (to === '/') return pathname === '/'
+  if (to === '/about#services') {
+    return (
+      (pathname === '/about' && hash === '#services') ||
+      pathname.startsWith('/services/')
+    )
+  }
+  if (to === '/about') {
+    return pathname === '/about' && hash !== '#services'
+  }
+  if (to === '/blog') {
+    return pathname === '/blog' || pathname.startsWith('/blog/')
+  }
+  return pathname === to || pathname.startsWith(`${to}/`)
+}
 
 export function Header() {
   const [open, setOpen] = useState(false)
@@ -30,39 +47,24 @@ export function Header() {
           className={`nav${open ? ' is-open' : ''}`}
           aria-label="Primary"
         >
-          {nav.map((item) =>
-            item.to === '/blog' ? (
-              <NavLink
-                key={item.to}
-                className="btn btn--primary nav-cta"
-                to={item.to}
-                onClick={() => setOpen(false)}
-              >
-                {item.label}
-              </NavLink>
-            ) : (
-              <NavLink
+          {nav.map((item) => {
+            const active = navItemActive(
+              item.to,
+              location.pathname,
+              location.hash,
+            )
+            return (
+              <Link
                 key={item.to}
                 to={item.to}
-                end={item.to === '/' || item.to === '/about'}
                 onClick={() => setOpen(false)}
-                className={({ isActive }) => {
-                  if (item.to === '/about#services') {
-                    const onServices =
-                      location.hash === '#services' ||
-                      location.pathname.startsWith('/services/')
-                    return onServices ? 'active' : undefined
-                  }
-                  if (item.to === '/about' && location.hash === '#services') {
-                    return undefined
-                  }
-                  return isActive ? 'active' : undefined
-                }}
+                className={active ? 'active' : undefined}
+                aria-current={active ? 'page' : undefined}
               >
                 {item.label}
-              </NavLink>
-            ),
-          )}
+              </Link>
+            )
+          })}
 
           {!loading && confirmed && user ? (
             <>
@@ -82,18 +84,30 @@ export function Header() {
             </>
           ) : (
             <>
-              <NavLink
+              <Link
                 to="/login"
                 onClick={() => setOpen(false)}
+                className={
+                  location.pathname === '/login' ? 'active' : undefined
+                }
+                aria-current={
+                  location.pathname === '/login' ? 'page' : undefined
+                }
               >
                 Log in
-              </NavLink>
-              <NavLink
+              </Link>
+              <Link
                 to="/signup"
                 onClick={() => setOpen(false)}
+                className={
+                  location.pathname === '/signup' ? 'active' : undefined
+                }
+                aria-current={
+                  location.pathname === '/signup' ? 'page' : undefined
+                }
               >
                 Sign up
-              </NavLink>
+              </Link>
             </>
           )}
         </nav>

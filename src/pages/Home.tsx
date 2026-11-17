@@ -39,15 +39,15 @@ export function Home() {
         </motion.div>
 
         <div className="wrap hero__content">
-          <motion.p className="brand-mark" {...rise(0.05)}>
+          <motion.p className="eyebrow" {...rise(0.05)}>
             {brand.name}
           </motion.p>
           <motion.h1 {...rise(0.16)}>
-            Intelligent solutions for companies and individuals.
+            Company formations, citizenship, HR, tax and licensing.
           </motion.h1>
           <motion.p className="lede" {...rise(0.28)}>
-            Company formations, investment migration, HR, tax and regulated
-            licensing — delivered with calm, corporate clarity.
+            One practice for corporate structuring, investment migration, people,
+            advisory and regulated licensing — with calm, corporate clarity.
           </motion.p>
           <motion.div className="cta-row" {...rise(0.4)}>
             <Link className="btn btn--primary" to="/about#services">
