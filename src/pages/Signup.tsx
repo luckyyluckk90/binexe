@@ -5,20 +5,21 @@ import { PageHero } from '../components/PageHero'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../auth/AuthContext'
 
-async function fetchConfirmationLink(email: string) {
-  const response = await fetch('/api/confirmation-link', {
+async function requestConfirmationEmail(email: string, fullName: string) {
+  const response = await fetch('/api/send-confirmation', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email }),
+    body: JSON.stringify({ email, fullName }),
   })
   const payload = (await response.json().catch(() => ({}))) as {
-    action_link?: string
+    ok?: boolean
     error?: string
+    provider?: string
   }
-  if (!response.ok || !payload.action_link) {
-    throw new Error(payload.error || 'Confirmation link unavailable.')
+  if (!response.ok || !payload.ok) {
+    throw new Error(payload.error || 'Confirmation email could not be sent.')
   }
-  return payload.action_link
+  return payload
 }
 
 export function Signup() {
@@ -38,48 +39,46 @@ export function Signup() {
   const [error, setError] = useState<string | null>(null)
   const [awaitingEmail, setAwaitingEmail] = useState(false)
   const [info, setInfo] = useState<string | null>(null)
-  const [confirmLink, setConfirmLink] = useState<string | null>(null)
-  const [linkLoading, setLinkLoading] = useState(false)
 
-  // Already signed in from a previous visit — but never leave while we are
-  // waiting for the new signup's email confirmation.
+  // Stay on this page while waiting for email confirmation.
   if (!loading && confirmed && user && !awaitingEmail) {
     return <Navigate to="/" replace />
-  }
-
-  async function loadConfirmLink(targetEmail: string) {
-    setLinkLoading(true)
-    try {
-      const link = await fetchConfirmationLink(targetEmail)
-      setConfirmLink(link)
-    } catch (err) {
-      const message =
-        err instanceof Error ? err.message : 'Confirmation link unavailable.'
-      setInfo(
-        `${message} You can still use Resend confirmation, then check spam.`,
-      )
-    } finally {
-      setLinkLoading(false)
-    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
     setInfo(null)
-    setConfirmLink(null)
     setSubmitting(true)
     const trimmedEmail = email.trim()
+    const trimmedName = fullName.trim()
     try {
-      // Lock the page on the confirmation step before auth state can redirect.
       setAwaitingEmail(true)
-      await signUp(trimmedEmail, password, fullName.trim())
-      notify(
-        'success',
-        'Kayıt başarılı',
-        'Bu ekranda kalın. E-posta onayından sonra anasayfaya gideceksiniz.',
-      )
-      await loadConfirmLink(trimmedEmail)
+      await signUp(trimmedEmail, password, trimmedName)
+
+      // Prefer our mailer (Resend) so confirmation is delivered reliably.
+      // Fallback to Supabase resend if custom mail is not configured yet.
+      try {
+        await requestConfirmationEmail(trimmedEmail, trimmedName)
+        setInfo(
+          'Doğrulama maili gönderildi. Gelen kutusu ve spam klasörünü kontrol edin. Onay linkine tıkladıktan sonra anasayfaya yönlendirileceksiniz.',
+        )
+        notify(
+          'success',
+          'Kayıt başarılı',
+          'Doğrulama maili gönderildi. Maildeki linke tıklayın.',
+        )
+      } catch {
+        await resendConfirmation(trimmedEmail)
+        setInfo(
+          'Doğrulama maili gönderildi. Gelen kutusu ve spam klasörünü kontrol edin. Onay linkine tıkladıktan sonra anasayfaya yönlendirileceksiniz.',
+        )
+        notify(
+          'success',
+          'Kayıt başarılı',
+          'Doğrulama maili gönderildi. Maildeki linke tıklayın.',
+        )
+      }
     } catch (err) {
       setAwaitingEmail(false)
       const message = err instanceof Error ? err.message : 'Kayıt başarısız.'
@@ -97,32 +96,33 @@ export function Signup() {
 
   async function handleResend() {
     if (!email.trim()) {
-      setError('Enter your email first, then resend confirmation.')
+      setError('Önce e-posta adresinizi girin, sonra tekrar gönderin.')
       return
     }
     setError(null)
-    setInfo(null)
     setSubmitting(true)
     try {
-      await resendConfirmation(email.trim())
-      setInfo('Confirmation email sent again. Check inbox and spam.')
+      try {
+        await requestConfirmationEmail(email.trim(), fullName.trim())
+      } catch {
+        await resendConfirmation(email.trim())
+      }
+      setInfo('Doğrulama maili tekrar gönderildi. Gelen kutusu ve spam’i kontrol edin.')
       notify(
         'info',
         'Doğrulama maili gönderildi',
         'Gelen kutusu ve spam klasörünü kontrol edin.',
       )
-      await loadConfirmLink(email.trim())
     } catch (err) {
       const message =
-        err instanceof Error ? err.message : 'Could not resend confirmation.'
+        err instanceof Error ? err.message : 'Mail gönderilemedi.'
       const lower = message.toLowerCase()
       const friendly =
         lower.includes('rate limit') || lower.includes('after')
-          ? 'Mail limiti aşıldı. Biraz bekleyin veya aşağıdaki doğrulama linkini kullanın.'
+          ? 'Mail limiti aşıldı. Biraz bekleyip tekrar deneyin.'
           : message
       setError(friendly)
       notify('error', 'Mail gönderilemedi', friendly)
-      await loadConfirmLink(email.trim())
     } finally {
       setSubmitting(false)
     }
@@ -133,7 +133,7 @@ export function Signup() {
       <PageHero
         eyebrow="Account"
         title="Sign up"
-        lead="Create an account. Stay on this page until you confirm your email — then you will reach the homepage."
+        lead="Create an account. You must confirm your email before access is granted."
       />
 
       <section className="section section--paper">
@@ -145,29 +145,16 @@ export function Signup() {
             </p>
           ) : awaitingEmail ? (
             <div className="form-success">
-              <h2 style={{ fontSize: '1.45rem' }}>Confirm your email</h2>
+              <h2 style={{ fontSize: '1.45rem' }}>E-posta onayını tamamlayın</h2>
               <p className="lede">
-                Registration succeeded for <strong>{email.trim()}</strong>.
-                Stay on this page. After you confirm your email, you will be
-                taken to the homepage.
+                <strong>{email.trim()}</strong> adresine doğrulama maili
+                gönderildi. Anasayfaya geçmek için maildeki onay linkine
+                tıklamanız gerekir.
               </p>
               <p className="form-note">
-                Check inbox and spam for the Supabase confirmation mail. If it
-                does not arrive, use the direct link below.
+                Mail gelmezse spam/junk klasörünü kontrol edin. Gerekirse
+                aşağıdaki butonla tekrar gönderin.
               </p>
-              {confirmLink ? (
-                <p className="lede">
-                  <a className="btn btn--primary" href={confirmLink}>
-                    Confirm email and continue
-                  </a>
-                </p>
-              ) : (
-                <p className="form-note">
-                  {linkLoading
-                    ? 'Preparing a direct confirmation link…'
-                    : 'Direct link not ready yet — try Resend confirmation.'}
-                </p>
-              )}
               {error ? (
                 <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
                   {error}
@@ -176,15 +163,15 @@ export function Signup() {
               {info ? <p className="form-note">{info}</p> : null}
               <div className="cta-row" style={{ marginTop: '1rem' }}>
                 <button
-                  className="btn btn--ghost"
+                  className="btn btn--primary"
                   type="button"
-                  disabled={submitting || linkLoading}
+                  disabled={submitting}
                   onClick={() => void handleResend()}
                 >
-                  {submitting ? 'Sending…' : 'Resend confirmation'}
+                  {submitting ? 'Gönderiliyor…' : 'Doğrulama mailini tekrar gönder'}
                 </button>
                 <Link className="btn btn--ghost" to="/login">
-                  Go to log in
+                  Log in
                 </Link>
               </div>
             </div>
@@ -224,8 +211,8 @@ export function Signup() {
                 />
               </div>
               <p className="form-note">
-                After you register you stay on this confirmation screen. The
-                homepage opens only after email verification.
+                Kayıttan sonra bu ekranda kalırsınız. Anasayfa yalnızca e-posta
+                doğrulama linkine tıkladıktan sonra açılır.
               </p>
               {error ? (
                 <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
