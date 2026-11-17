@@ -431,9 +431,25 @@
   margin-top: 1.5rem;
 }
 
-.legal-prose .btn {
+.legal-prose a.btn {
   text-decoration: none;
   font-weight: 600;
+}
+
+.legal-prose a.btn--primary,
+.legal-prose a.btn--primary:hover {
+  color: #ffffff;
+  background: var(--accent);
+}
+
+.legal-prose a.btn--primary:hover {
+  background: var(--accent-deep);
+}
+
+.legal-prose a.btn--ghost,
+.legal-prose a.btn--ghost:hover {
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.72);
 }
 
 /* Sections */
@@ -822,7 +838,7 @@
   gap: 0.35rem;
 }
 
-.legal-prose a {
+.legal-prose a:not(.btn) {
   color: var(--accent);
   font-weight: 600;
 }
