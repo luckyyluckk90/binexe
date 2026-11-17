@@ -58,7 +58,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = client.auth.onAuthStateChange((_event, next) => {
       if (!mounted) return
-      if (next && !isEmailConfirmed(next.user)) {
+      const onCallback =
+        typeof window !== 'undefined' &&
+        window.location.pathname.startsWith('/auth/callback')
+      if (next && !isEmailConfirmed(next.user) && !onCallback) {
         // Keep unconfirmed signups logged out until /auth/callback verifies.
         void client.auth.signOut({ scope: 'local' })
         setSession(null)

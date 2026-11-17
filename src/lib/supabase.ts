@@ -15,7 +15,9 @@ export const supabase: SupabaseClient | null = isSupabaseConfigured
         persistSession: true,
         autoRefreshToken: true,
         detectSessionInUrl: true,
-        flowType: 'pkce',
+        // Admin generate_link (Resend) returns implicit #access_token redirects,
+        // not PKCE ?code= exchanges.
+        flowType: 'implicit',
       },
     })
   : null
@@ -56,4 +58,52 @@ export function isEmailConfirmed(user: {
   if (!user) return false
   // Prefer the explicit auth confirmation timestamp only.
   return Boolean(user.email_confirmed_at)
+}
+
+/** Parse auth redirect errors from hash or query string. */
+export function readAuthRedirectError(href = window.location.href): string | null {
+  try {
+    const url = new URL(href)
+    const hash = new URLSearchParams(url.hash.replace(/^#/, ''))
+    const query = url.searchParams
+    const description =
+      hash.get('error_description') ||
+      query.get('error_description') ||
+      hash.get('error') ||
+      query.get('error')
+    return description ? description.replace(/\+/g, ' ') : null
+  } catch {
+    return null
+  }
+}
+
+/** Recover an implicit-flow session from the URL hash if present. */
+export async function recoverSessionFromUrl() {
+  if (!supabase || typeof window === 'undefined') {
+    return { session: null, error: null as Error | null }
+  }
+
+  const redirectError = readAuthRedirectError()
+  if (redirectError) {
+    return { session: null, error: new Error(redirectError) }
+  }
+
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ''))
+  const accessToken = hash.get('access_token')
+  const refreshToken = hash.get('refresh_token')
+
+  if (accessToken && refreshToken) {
+    const { data, error } = await supabase.auth.setSession({
+      access_token: accessToken,
+      refresh_token: refreshToken,
+    })
+    if (error) return { session: null, error }
+    // Clear tokens from the address bar after a successful recovery.
+    window.history.replaceState({}, document.title, window.location.pathname)
+    return { session: data.session, error: null }
+  }
+
+  const { data, error } = await supabase.auth.getSession()
+  if (error) return { session: null, error }
+  return { session: data.session, error: null }
 }

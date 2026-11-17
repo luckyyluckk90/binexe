@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { PageHero } from '../components/PageHero'
 import { useToast } from '../components/Toast'
-import { isEmailConfirmed, supabase } from '../lib/supabase'
+import {
+  isEmailConfirmed,
+  recoverSessionFromUrl,
+  supabase,
+} from '../lib/supabase'
 
 function wait(ms: number) {
   return new Promise<void>((resolve) => {
@@ -27,31 +31,67 @@ export function AuthCallback() {
         return
       }
 
-      // PKCE / magic-link flows may still be settling the session.
-      const { data, error } = await supabase.auth.getSession()
+      // Implicit magic-link redirects land with #access_token=… — recover that
+      // session explicitly, with a short retry while the client settles.
+      let session = null
+      let lastError: Error | null = null
+
+      for (let attempt = 0; attempt < 5; attempt += 1) {
+        const recovered = await recoverSessionFromUrl()
+        if (!active) return
+
+        if (recovered.error) {
+          lastError = recovered.error
+          break
+        }
+
+        if (recovered.session) {
+          session = recovered.session
+          break
+        }
+
+        await wait(250)
+      }
+
       if (!active) return
 
-      if (error) {
+      if (lastError) {
         setFailed(true)
-        setMessage(error.message)
-        notify('error', 'Doğrulama başarısız', error.message)
+        setMessage(lastError.message)
+        notify('error', 'Doğrulama başarısız', lastError.message)
         return
       }
 
-      if (data.session && isEmailConfirmed(data.session.user)) {
+      if (session && isEmailConfirmed(session.user)) {
         setMessage('Email confirmed. Taking you to the homepage…')
         notify(
           'success',
           'E-posta doğrulandı',
           'Hesabınız aktif. Ana sayfaya yönlendiriliyorsunuz.',
         )
-        await wait(1400)
+        await wait(1200)
         if (!active) return
         navigate('/', { replace: true })
         return
       }
 
-      if (data.session && !isEmailConfirmed(data.session.user)) {
+      if (session && !isEmailConfirmed(session.user)) {
+        // Refresh user in case confirmation landed after the token was issued.
+        const { data: userData } = await supabase.auth.getUser()
+        if (!active) return
+        if (isEmailConfirmed(userData.user)) {
+          setMessage('Email confirmed. Taking you to the homepage…')
+          notify(
+            'success',
+            'E-posta doğrulandı',
+            'Hesabınız aktif. Ana sayfaya yönlendiriliyorsunuz.',
+          )
+          await wait(1200)
+          if (!active) return
+          navigate('/', { replace: true })
+          return
+        }
+
         await supabase.auth.signOut()
         setFailed(true)
         setMessage(
@@ -67,12 +107,12 @@ export function AuthCallback() {
 
       setFailed(true)
       setMessage(
-        'No confirmed session found. Try the verification link again, then log in.',
+        'No confirmed session found. If you already clicked the email link, try logging in — your email may already be verified.',
       )
       notify(
         'error',
-        'Doğrulama başarısız',
-        'Linki yeniden deneyin veya giriş sayfasından devam edin.',
+        'Oturum bulunamadı',
+        'Linki yeniden deneyin veya giriş yapın.',
       )
     }
 
