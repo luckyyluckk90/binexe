@@ -5,6 +5,22 @@ import { PageHero } from '../components/PageHero'
 import { useToast } from '../components/Toast'
 import { useAuth } from '../auth/AuthContext'
 
+async function fetchConfirmationLink(email: string) {
+  const response = await fetch('/api/confirmation-link', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  })
+  const payload = (await response.json().catch(() => ({}))) as {
+    action_link?: string
+    error?: string
+  }
+  if (!response.ok || !payload.action_link) {
+    throw new Error(payload.error || 'Confirmation link unavailable.')
+  }
+  return payload.action_link
+}
+
 export function Signup() {
   const {
     configured,
@@ -22,29 +38,54 @@ export function Signup() {
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
   const [info, setInfo] = useState<string | null>(null)
+  const [confirmLink, setConfirmLink] = useState<string | null>(null)
+  const [linkLoading, setLinkLoading] = useState(false)
 
-  // Only leave signup once the email is actually confirmed.
   if (!loading && confirmed && user) {
     return <Navigate to="/" replace />
+  }
+
+  async function loadConfirmLink(targetEmail: string) {
+    setLinkLoading(true)
+    try {
+      const link = await fetchConfirmationLink(targetEmail)
+      setConfirmLink(link)
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'Confirmation link unavailable.'
+      setInfo(
+        `${message} You can still use Resend confirmation, then check spam.`,
+      )
+    } finally {
+      setLinkLoading(false)
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     setError(null)
     setInfo(null)
+    setConfirmLink(null)
     setSubmitting(true)
+    const trimmedEmail = email.trim()
     try {
-      await signUp(email.trim(), password, fullName.trim())
+      await signUp(trimmedEmail, password, fullName.trim())
       setDone(true)
       notify(
         'success',
         'Kayıt başarılı',
-        'Doğrulama maili gönderildi. Bu ekranda kalın ve e-postanızı onaylayın.',
+        'Doğrulama maili gönderildi. Gelmezse bu ekrandaki linki kullanın.',
       )
+      await loadConfirmLink(trimmedEmail)
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Kayıt başarısız.'
-      setError(message)
-      notify('error', 'Kayıt başarısız', message)
+      const lower = message.toLowerCase()
+      const friendly =
+        lower.includes('rate limit') || lower.includes('after')
+          ? 'Çok sık mail istendi. Bir dakika bekleyip tekrar deneyin; spam klasörünü de kontrol edin.'
+          : message
+      setError(friendly)
+      notify('error', 'Kayıt başarısız', friendly)
     } finally {
       setSubmitting(false)
     }
@@ -60,17 +101,24 @@ export function Signup() {
     setSubmitting(true)
     try {
       await resendConfirmation(email.trim())
-      setInfo('Confirmation email sent again. Check your inbox and spam folder.')
+      setInfo('Confirmation email sent again. Check inbox and spam.')
       notify(
         'info',
         'Doğrulama maili gönderildi',
-        'Gelen kutunuzu kontrol edin.',
+        'Gelen kutusu ve spam klasörünü kontrol edin.',
       )
+      await loadConfirmLink(email.trim())
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Could not resend confirmation.'
-      setError(message)
-      notify('error', 'Mail gönderilemedi', message)
+      const lower = message.toLowerCase()
+      const friendly =
+        lower.includes('rate limit') || lower.includes('after')
+          ? 'Mail limiti aşıldı. Biraz bekleyin veya aşağıdaki doğrulama linkini kullanın.'
+          : message
+      setError(friendly)
+      notify('error', 'Mail gönderilemedi', friendly)
+      await loadConfirmLink(email.trim())
     } finally {
       setSubmitting(false)
     }
@@ -95,14 +143,22 @@ export function Signup() {
             <div className="form-success">
               <h2 style={{ fontSize: '1.45rem' }}>Confirm your email</h2>
               <p className="lede">
-                Registration succeeded. We sent a verification link to{' '}
-                <strong>{email.trim()}</strong>. Open that link to verify your
-                account — after confirmation you will be taken to the homepage.
+                Registration succeeded for <strong>{email.trim()}</strong>.
+                Supabase sends the confirmation mail from its shared mailer —
+                check spam/junk. If nothing arrives, use the direct confirmation
+                link below.
               </p>
-              <p className="form-note">
-                Keep this tab open if you like. Confirmation happens when you
-                click the link in your email.
-              </p>
+              {confirmLink ? (
+                <p className="lede">
+                  <a href={confirmLink}>Confirm email and continue</a>
+                </p>
+              ) : (
+                <p className="form-note">
+                  {linkLoading
+                    ? 'Preparing a direct confirmation link…'
+                    : 'Direct link not ready yet — try Resend confirmation.'}
+                </p>
+              )}
               {error ? (
                 <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
                   {error}
@@ -113,7 +169,7 @@ export function Signup() {
                 <button
                   className="btn btn--primary"
                   type="button"
-                  disabled={submitting}
+                  disabled={submitting || linkLoading}
                   onClick={() => void handleResend()}
                 >
                   {submitting ? 'Sending…' : 'Resend confirmation'}
@@ -159,8 +215,8 @@ export function Signup() {
                 />
               </div>
               <p className="form-note">
-                After you register, stay here and confirm the email we send.
-                The homepage opens only after verification.
+                After you register, stay here and confirm the email. The
+                homepage opens only after verification.
               </p>
               {error ? (
                 <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>

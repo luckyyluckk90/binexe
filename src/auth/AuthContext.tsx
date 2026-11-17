@@ -84,7 +84,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           },
         })
 
-        if (error) throw error
+        if (error) {
+          const message = error.message.toLowerCase()
+          if (message.includes('rate limit') || message.includes('after')) {
+            throw new Error(
+              'Email rate limit reached. Wait about a minute, check spam, then use Resend confirmation.',
+            )
+          }
+          throw error
+        }
 
         // Supabase may return a user with empty identities when the email
         // already exists — treat that as a failed / blocked signup.
@@ -155,7 +163,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             emailRedirectTo: `${siteUrl || window.location.origin}/auth/callback`,
           },
         })
-        if (error) throw error
+        if (error) {
+          const message = error.message.toLowerCase()
+          if (message.includes('rate limit') || message.includes('after')) {
+            throw new Error(
+              'Email rate limit reached. Wait a minute, check spam, or use the on-page confirmation link.',
+            )
+          }
+          throw error
+        }
       },
     }
   }, [loading, session])
