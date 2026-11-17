@@ -103,7 +103,7 @@ export function Profile() {
 
   async function handleSignOut() {
     await signOut()
-    notify('info', 'Çıkış yapıldı', 'Görüşmek üzere.')
+    notify('info', 'Signed out', 'See you soon.')
     navigate('/', { replace: true })
   }
 
