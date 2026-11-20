@@ -2,6 +2,8 @@
   min-height: 100svh;
   display: flex;
   flex-direction: column;
+  background: var(--paper-2);
+  color: var(--ink);
 }
 
 .shell__main {
@@ -13,14 +15,24 @@
   margin-inline: auto;
 }
 
-/* Header */
+/* Header — Atlas Ink */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 40;
-  backdrop-filter: blur(12px);
-  background: color-mix(in srgb, var(--paper-2) 86%, transparent);
-  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(14px);
+  background: color-mix(in srgb, var(--paper-2) 78%, transparent);
+  border-bottom: 1px solid transparent;
+  transition:
+    background var(--duration-mid) var(--ease),
+    border-color var(--duration-mid) var(--ease),
+    box-shadow var(--duration-mid) var(--ease);
+}
+
+.site-header--scrolled {
+  background: color-mix(in srgb, var(--ink-deep) 94%, transparent);
+  border-bottom-color: var(--line);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
 }
 
 .site-header__inner {
@@ -28,14 +40,16 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  min-height: 4.25rem;
+  min-height: 4.5rem;
 }
 
 .logo {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: 1.35rem;
-  letter-spacing: -0.04em;
+  font-size: clamp(1.45rem, 2.4vw, 1.75rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  color: var(--ink);
 }
 
 .logo span {
@@ -45,17 +59,18 @@
 .nav {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.15rem;
 }
 
 .nav a {
-  padding: 0.55rem 0.55rem;
+  padding: 0.55rem 0.65rem;
   border-radius: 0;
   color: var(--ink-soft);
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
   background: transparent;
-  transition: color 160ms var(--ease);
+  transition: color var(--duration-fast) var(--ease);
 }
 
 .nav a:hover,
@@ -84,11 +99,11 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .nav-user-link.active {
-  color: var(--accent-deep);
+  color: var(--accent);
 }
 
 .avatar {
@@ -96,12 +111,12 @@
   place-items: center;
   flex-shrink: 0;
   border-radius: 999px;
-  color: #f4f7f8;
+  color: var(--ink);
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: 0.02em;
   line-height: 1;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(232, 238, 242, 0.22);
 }
 
 .avatar--sm {
@@ -153,7 +168,7 @@
   align-items: center;
   gap: 0.4rem;
   margin: 0;
-  color: var(--accent-deep);
+  color: var(--accent);
   font-size: 0.86rem;
   font-weight: 700;
   letter-spacing: 0.02em;
@@ -260,11 +275,12 @@
   gap: 0.75rem;
   align-items: start;
   padding: 0.9rem 1rem;
-  border-radius: 0.5rem;
+  border-radius: 0.35rem;
   border: 1px solid var(--line);
-  background: #fff;
-  box-shadow: 0 10px 30px rgba(19, 32, 40, 0.12);
-  animation: toast-in 220ms var(--ease);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+  animation: toast-in var(--duration-mid) var(--ease);
 }
 
 .toast strong {
@@ -272,6 +288,7 @@
   font-family: var(--font-display);
   font-size: 0.98rem;
   margin-bottom: 0.2rem;
+  letter-spacing: -0.02em;
 }
 
 .toast p {
@@ -282,17 +299,18 @@
 }
 
 .toast--success {
-  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
-  background: #f2fbf8;
+  border-color: color-mix(in srgb, var(--success) 45%, var(--line));
+  background: color-mix(in srgb, var(--success-soft) 70%, var(--paper));
 }
 
 .toast--error {
-  border-color: #e2b4b4;
-  background: #fff6f6;
+  border-color: color-mix(in srgb, var(--danger) 50%, var(--line));
+  background: color-mix(in srgb, var(--danger-soft) 70%, var(--paper));
 }
 
 .toast--info {
-  background: #f4f8fb;
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--line));
+  background: color-mix(in srgb, var(--accent-soft) 55%, var(--paper));
 }
 
 .toast__close {
@@ -303,6 +321,11 @@
   cursor: pointer;
   color: var(--ink-soft);
   padding: 0;
+  transition: color var(--duration-fast) var(--ease);
+}
+
+.toast__close:hover {
+  color: var(--ink);
 }
 
 @keyframes toast-in {
@@ -430,30 +453,42 @@
 .menu-toggle {
   display: none;
   border: 1px solid var(--line);
-  background: white;
-  border-radius: 0.4rem;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 0.3rem;
   min-height: 2.5rem;
   padding: 0 0.85rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    background var(--duration-fast) var(--ease);
 }
 
-/* Buttons */
+.menu-toggle:hover {
+  border-color: var(--line-strong);
+  background: var(--paper-muted);
+}
+
+/* Buttons — Atlas Ink */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
   min-height: 2.9rem;
-  padding: 0.65rem 1.15rem;
-  border-radius: 0.45rem;
+  padding: 0.65rem 1.2rem;
+  border-radius: 0.3rem;
   border: 1px solid transparent;
   font-weight: 600;
   letter-spacing: -0.01em;
+  cursor: pointer;
   transition:
-    background 160ms var(--ease),
-    color 160ms var(--ease),
-    border-color 160ms var(--ease),
-    transform 160ms var(--ease);
+    background var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
 }
 
 .btn:hover {
@@ -462,32 +497,34 @@
 
 .btn--primary {
   background: var(--accent);
-  color: #ffffff;
+  color: #f4fbf9;
 }
 
 .btn--primary:hover {
   background: var(--accent-deep);
-  color: #ffffff;
+  color: #f4fbf9;
 }
 
 .btn--ghost {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: var(--line);
+  background: transparent;
+  border-color: var(--line-strong);
   color: var(--ink);
-  backdrop-filter: blur(8px);
 }
 
 .btn--ghost:hover {
-  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  background: var(--accent-mist);
 }
 
 .btn--dark {
-  background: var(--ink);
-  color: #f4f7f8;
+  background: var(--ink-deep);
+  color: var(--ink);
+  border-color: var(--line);
 }
 
 .btn--dark:hover {
-  background: #0b161c;
+  background: var(--paper);
+  border-color: var(--line-strong);
 }
 
 /* Hero */
@@ -568,24 +605,25 @@
 .cookie-actions .btn--primary,
 .cookie-actions .btn--primary:hover,
 .cookie-actions .btn--primary:focus-visible {
-  color: #ffffff !important;
-  background: #087a68 !important;
+  color: #f4fbf9 !important;
+  background: var(--accent) !important;
 }
 
 .cookie-actions .btn--primary:hover,
 .cookie-actions .btn--primary:focus-visible {
-  background: #065f51 !important;
+  background: var(--accent-deep) !important;
 }
 
 .cookie-actions .btn--ghost,
 .cookie-actions .btn--ghost:hover {
   color: var(--ink) !important;
-  background: #ffffff !important;
+  background: transparent !important;
+  border-color: var(--line-strong) !important;
 }
 
-/* Sections */
+/* Sections — surface tokens remapped for Atlas Ink shell */
 .section {
-  padding: clamp(3.5rem, 7vw, 5.5rem) 0;
+  padding: var(--section-y) 0;
 }
 
 .section--paper {
@@ -594,18 +632,18 @@
 
 .section--muted {
   background:
-    linear-gradient(180deg, #e4ecef 0%, #d9e4e8 100%);
+    linear-gradient(180deg, var(--paper-muted) 0%, var(--paper) 100%);
   border-block: 1px solid var(--line);
 }
 
 .section--ink {
-  background: var(--ink);
-  color: #e8eef1;
+  background: var(--ink-deep);
+  color: var(--ink);
 }
 
 .section--ink .muted,
 .section--ink .lede {
-  color: rgba(232, 238, 241, 0.72);
+  color: var(--ink-soft);
 }
 
 .section__head {
@@ -625,7 +663,7 @@
 }
 
 .section--ink .eyebrow {
-  color: #8fd0c5;
+  color: color-mix(in srgb, var(--accent) 70%, white);
 }
 
 .section h2 {
@@ -890,12 +928,14 @@
 
 .field {
   display: grid;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .field label {
   font-weight: 600;
-  font-size: 0.92rem;
+  font-size: var(--text-small);
+  letter-spacing: 0.01em;
+  color: var(--ink);
 }
 
 .field input,
@@ -903,17 +943,37 @@
 .field textarea {
   width: 100%;
   border: 1px solid var(--line);
-  background: white;
-  border-radius: 0.4rem;
-  padding: 0.75rem 0.85rem;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 0.3rem;
+  padding: 0.8rem 0.9rem;
   outline: none;
-  transition: border-color 160ms var(--ease);
+  transition:
+    border-color var(--duration-fast) var(--ease),
+    background var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: color-mix(in srgb, var(--ink-soft) 85%, transparent);
+}
+
+.field input:hover,
+.field select:hover,
+.field textarea:hover {
+  border-color: var(--line-strong);
 }
 
 .field input:focus,
 .field select:focus,
-.field textarea:focus {
+.field textarea:focus,
+.field input:focus-visible,
+.field select:focus-visible,
+.field textarea:focus-visible {
   border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+  outline: none;
 }
 
 .field textarea {
@@ -921,9 +981,22 @@
   resize: vertical;
 }
 
+.field select {
+  appearance: none;
+  background-color: var(--paper);
+  background-image: linear-gradient(45deg, transparent 50%, var(--ink-soft) 50%),
+    linear-gradient(135deg, var(--ink-soft) 50%, transparent 50%);
+  background-position:
+    calc(100% - 1.15rem) 55%,
+    calc(100% - 0.85rem) 55%;
+  background-size: 0.35rem 0.35rem;
+  background-repeat: no-repeat;
+  padding-right: 2.25rem;
+}
+
 .form-note {
   color: var(--ink-soft);
-  font-size: 0.92rem;
+  font-size: var(--text-small);
 }
 
 .form-success {
@@ -933,23 +1006,28 @@
   gap: 0.5rem;
 }
 
-/* Footer */
+/* Footer — Atlas Ink */
 .site-footer {
   margin-top: auto;
   border-top: 1px solid var(--line);
-  background: #e3eaed;
-  padding: 2.5rem 0 2rem;
+  background:
+    radial-gradient(80% 60% at 0% 0%, var(--accent-mist), transparent 55%),
+    var(--ink-deep);
+  padding: 3rem 0 2.25rem;
 }
 
 .site-footer__grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 1.35fr 1fr 1fr;
+  gap: 2rem 1.5rem;
 }
 
 .site-footer h2 {
+  font-family: var(--font-display);
   font-size: 1.05rem;
-  margin-bottom: 0.7rem;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.85rem;
+  color: var(--ink);
 }
 
 .site-footer p,
@@ -958,9 +1036,10 @@
 }
 
 .footer-legal {
-  margin-top: 0.85rem;
-  font-size: 0.88rem;
-  line-height: 1.45;
+  margin-top: 0.95rem;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  max-width: 28ch;
 }
 
 .legal-prose h2 {
@@ -999,20 +1078,21 @@
 }
 
 .site-footer__base {
-  margin-top: 2rem;
-  padding-top: 1rem;
+  margin-top: 2.25rem;
+  padding-top: 1.15rem;
   border-top: 1px solid var(--line);
   display: flex;
   justify-content: space-between;
   gap: 1rem;
   color: var(--ink-soft);
-  font-size: 0.92rem;
+  font-size: 0.9rem;
 }
 
 .site-footer__base strong {
   font-family: var(--font-display);
   color: var(--ink);
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 
 @media (max-width: 900px) {
@@ -1132,15 +1212,27 @@
     top: calc(100% + 1px);
     left: 0;
     right: 0;
-    background: rgba(244, 247, 248, 0.98);
+    background: color-mix(in srgb, var(--ink-deep) 97%, transparent);
+    backdrop-filter: blur(16px);
     border-bottom: 1px solid var(--line);
-    padding: 0.75rem var(--gutter) 1rem;
+    padding: 0.85rem var(--gutter) 1.15rem;
     flex-direction: column;
     align-items: stretch;
+    gap: 0.15rem;
   }
 
   .nav.is-open {
     display: flex;
+  }
+
+  .nav a {
+    padding: 0.75rem 0.35rem;
+    border-bottom: 1px solid var(--line);
+    font-size: 1rem;
+  }
+
+  .nav a:last-child {
+    border-bottom: 0;
   }
 
   .audience-grid,
