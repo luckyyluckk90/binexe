@@ -1,31 +1,105 @@
+/*
+  Atlas Ink — Phase 1 design tokens & foundations.
+  Direction: dark cinematic professional. Accent locked: teal #0a7a6a.
+  Component/shell restyles land in Phase 2+; this file owns the system only.
+*/
+
 :root {
-  --ink: #132028;
-  --ink-soft: #4a5d68;
-  --paper: #e8eef1;
-  --paper-2: #f4f7f8;
-  --line: rgba(19, 32, 40, 0.12);
+  /* ——— Color: surfaces (dark field) ——— */
+  --ink-deep: #070b0d;
+  --paper: #10171b;
+  --paper-2: #070b0d;
+  --paper-muted: #141c21;
+
+  /* ——— Color: type (chalk on ink) ———
+     --ink / --ink-soft keep their role as primary/muted text so existing
+     App.css color: var(--ink) rules stay readable on dark paper. Dark section
+     backgrounds use --ink-deep (Phase 2 will remap .section--ink etc.). */
+  --ink: #e8eef2;
+  --ink-soft: #9aadb6;
+  --chalk: var(--ink);
+  --chalk-soft: var(--ink-soft);
+
+  /* ——— Color: structure ——— */
+  --line: rgba(232, 238, 242, 0.12);
+  --line-strong: rgba(232, 238, 242, 0.22);
+
+  /* ——— Color: accent (restrained teal — not purple) ——— */
   --accent: #0a7a6a;
   --accent-deep: #086055;
-  --accent-soft: #d7ebe7;
+  --accent-soft: rgba(10, 122, 106, 0.18);
+  --accent-mist: rgba(10, 122, 106, 0.08);
+
+  /* ——— Color: focus & status ——— */
+  --focus-ring: color-mix(in srgb, var(--accent) 55%, white);
+  --danger: #c45b5b;
+  --danger-soft: rgba(196, 91, 91, 0.16);
+  --success: #3d9a7a;
+  --success-soft: rgba(61, 154, 122, 0.16);
+
+  /* ——— Hero veil: dark cinematic over full-bleed photography ——— */
   --hero-veil: linear-gradient(
     105deg,
-    rgba(232, 238, 241, 0.94) 0%,
-    rgba(232, 238, 241, 0.78) 42%,
-    rgba(19, 32, 40, 0.28) 100%
+    rgba(7, 11, 13, 0.92) 0%,
+    rgba(7, 11, 13, 0.72) 42%,
+    rgba(7, 11, 13, 0.35) 100%
   );
-  --font-display: "Outfit", sans-serif;
-  --font-body: "Source Sans 3", sans-serif;
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --hero-veil-radial: radial-gradient(
+    120% 80% at 70% 40%,
+    transparent 0%,
+    rgba(7, 11, 13, 0.55) 100%
+  );
+
+  /* ——— Typography: Syne (display) + DM Sans (body) ——— */
+  --font-display: "Syne", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+
+  /* Type scale */
+  --text-display: clamp(2.75rem, 6vw, 4.5rem);
+  --text-h1: clamp(2.1rem, 4vw, 3.25rem);
+  --text-h2: clamp(1.65rem, 2.8vw, 2.25rem);
+  --text-h3: clamp(1.2rem, 1.6vw, 1.45rem);
+  --text-body: 1.0625rem;
+  --text-small: 0.9375rem;
+  --text-label: 0.75rem;
+  --leading-display: 1.05;
+  --leading-body: 1.6;
+  --leading-tight: 1.2;
+  --tracking-display: -0.035em;
+  --tracking-label: 0.08em;
+  --measure: 65ch;
+
+  /* ——— Spacing & layout ——— */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+  --section-y: clamp(3.5rem, 8vw, 6.5rem);
   --max: 1120px;
   --gutter: clamp(1.25rem, 4vw, 2rem);
+
+  /* ——— Motion: cinematic hooks (apply in Phase 3+) ——— */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-cinematic: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-soft: cubic-bezier(0.33, 1, 0.68, 1);
+  --duration-fast: 160ms;
+  --duration-mid: 420ms;
+  --duration-slow: 900ms;
+  --duration-hero: 1400ms;
+
   color: var(--ink);
   background: var(--paper-2);
   font-family: var(--font-body);
-  font-size: 17px;
-  line-height: 1.55;
+  font-size: var(--text-body);
+  line-height: var(--leading-body);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 *,
@@ -42,6 +116,11 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100%;
+  background:
+    radial-gradient(90% 60% at 15% -10%, var(--accent-mist), transparent 55%),
+    radial-gradient(70% 50% at 100% 0%, rgba(10, 122, 106, 0.06), transparent 50%),
+    var(--paper-2);
+  color: var(--ink);
 }
 
 #root {
@@ -71,10 +150,24 @@ h2,
 h3,
 h4 {
   font-family: var(--font-display);
-  line-height: 1.12;
-  letter-spacing: -0.03em;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
   font-weight: 700;
   margin: 0;
+  color: var(--ink);
+}
+
+h1 {
+  font-size: var(--text-h1);
+}
+
+h2 {
+  font-size: var(--text-h2);
+}
+
+h3 {
+  font-size: var(--text-h3);
+  letter-spacing: -0.02em;
 }
 
 p {
@@ -82,7 +175,13 @@ p {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 26%, white);
+  background: color-mix(in srgb, var(--accent) 40%, transparent);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
 }
 
 .sr-only {
@@ -94,4 +193,71 @@ p {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+/* ——— Motion hooks (unused by pages until Phase 3; respect reduced-motion) ——— */
+
+@keyframes atlas-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes atlas-kenburns {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes atlas-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.motion-rise {
+  animation: atlas-rise var(--duration-slow) var(--ease-cinematic) both;
+}
+
+.motion-fade {
+  animation: atlas-fade var(--duration-mid) var(--ease-out-soft) both;
+}
+
+.motion-hero-media {
+  animation: atlas-kenburns var(--duration-hero) var(--ease-cinematic) both;
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .motion-rise,
+  .motion-fade,
+  .motion-hero-media {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
 }
