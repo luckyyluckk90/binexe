@@ -16,7 +16,7 @@
      App.css color: var(--ink) rules stay readable on dark paper. Dark section
      backgrounds use --ink-deep (Phase 2 will remap .section--ink etc.). */
   --ink: #e8eef2;
-  --ink-soft: #9aadb6;
+  --ink-soft: #a3b6bf;
   --chalk: var(--ink);
   --chalk-soft: var(--ink-soft);
 
@@ -37,7 +37,7 @@
   --success: #3d9a7a;
   --success-soft: rgba(61, 154, 122, 0.16);
 
-  /* ——— Hero veil: dark cinematic over full-bleed photography ——— */
+  /* ——— Hero / media veils: dark cinematic over photography ——— */
   --hero-veil: linear-gradient(
     105deg,
     rgba(7, 11, 13, 0.92) 0%,
@@ -48,6 +48,11 @@
     120% 80% at 70% 40%,
     transparent 0%,
     rgba(7, 11, 13, 0.55) 100%
+  );
+  --media-veil: linear-gradient(
+    180deg,
+    rgba(7, 11, 13, 0.08) 0%,
+    rgba(7, 11, 13, 0.42) 100%
   );
 
   /* ——— Typography: Syne (display) + DM Sans (body) ——— */
