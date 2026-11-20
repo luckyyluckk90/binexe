@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { CtaBand } from '../components/CtaBand'
-import { brand, sectors, services } from '../content/site'
+import { sectors, services } from '../content/site'
 
-const ease = [0.22, 1, 0.36, 1] as const
+const cinematic = [0.16, 1, 0.3, 1] as const
 
 export function Home() {
   const reduceMotion = useReducedMotion()
@@ -12,9 +12,9 @@ export function Home() {
     reduceMotion
       ? { initial: false as const, animate: { opacity: 1, y: 0 } }
       : {
-          initial: { opacity: 0, y: 24 },
+          initial: { opacity: 0, y: 28 },
           animate: { opacity: 1, y: 0 },
-          transition: { duration: 0.8, delay, ease },
+          transition: { duration: 0.95, delay, ease: cinematic },
         }
 
   return (
@@ -23,9 +23,9 @@ export function Home() {
         <motion.div
           className="hero__media"
           aria-hidden="true"
-          initial={reduceMotion ? false : { scale: 1.06 }}
+          initial={reduceMotion ? false : { scale: 1.08 }}
           animate={{ scale: 1 }}
-          transition={{ duration: 1.5, ease }}
+          transition={{ duration: 1.55, ease: cinematic }}
         >
           <img
             src="/hero-corporate.jpg"
@@ -39,17 +39,17 @@ export function Home() {
         </motion.div>
 
         <div className="wrap hero__content">
-          <motion.p className="eyebrow" {...rise(0.05)}>
-            {brand.name}
+          <motion.p className="hero__brand" {...rise(0.04)}>
+            Bin<span>exe</span>
           </motion.p>
-          <motion.h1 {...rise(0.16)}>
+          <motion.h1 {...rise(0.18)}>
             Company formations, citizenship, HR, tax and licensing.
           </motion.h1>
-          <motion.p className="lede" {...rise(0.28)}>
+          <motion.p className="lede" {...rise(0.3)}>
             One practice for corporate structuring, investment migration, people,
             advisory and regulated licensing — with calm, corporate clarity.
           </motion.p>
-          <motion.div className="cta-row" {...rise(0.4)}>
+          <motion.div className="cta-row" {...rise(0.42)}>
             <Link className="btn btn--primary" to="/about#services">
               Explore services
             </Link>
@@ -60,7 +60,7 @@ export function Home() {
         </div>
       </header>
 
-      <section className="section section--paper">
+      <section className="section section--paper home-services">
         <div className="wrap">
           <div className="section__head">
             <p className="eyebrow">Our suite of services</p>
@@ -88,7 +88,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="section section--muted">
+      <section className="section section--muted home-audience">
         <div className="wrap split">
           <div className="split__media">
             <img
@@ -123,7 +123,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="section section--paper">
+      <section className="section section--paper home-sectors">
         <div className="wrap">
           <div className="section__head">
             <p className="eyebrow">Specialist sectors</p>
@@ -144,7 +144,7 @@ export function Home() {
         </div>
       </section>
 
-      <section className="section section--muted">
+      <section className="section section--muted home-migration">
         <div className="wrap split split--reverse">
           <div className="split__copy">
             <p className="eyebrow">Citizenship solutions</p>
