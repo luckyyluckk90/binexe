@@ -107,7 +107,7 @@ export function Contact() {
                   : `Supabase is not connected yet — submit opens an email to ${brand.email}.`}
               </p>
               {error ? (
-                <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
+                <p className="form-note form-note--error" role="alert">
                   {error}
                 </p>
               ) : null}

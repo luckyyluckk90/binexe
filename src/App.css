@@ -890,49 +890,101 @@
   gap: 1.15rem;
 }
 
+/* PageHero — Atlas Ink inner marketing */
 .page-hero {
-  padding: 3.5rem 0 2.5rem;
+  position: relative;
+  isolation: isolate;
+  padding: clamp(3.75rem, 8vw, 5.25rem) 0 clamp(2.75rem, 5vw, 3.5rem);
   background:
-    radial-gradient(90% 80% at 100% 0%, #c9ddd8 0%, transparent 55%),
-    linear-gradient(180deg, #e7eef1 0%, var(--paper-2) 100%);
+    radial-gradient(90% 70% at 100% 0%, var(--accent-mist), transparent 55%),
+    radial-gradient(70% 50% at 0% 100%, rgba(10, 122, 106, 0.05), transparent 45%),
+    linear-gradient(180deg, var(--paper) 0%, var(--paper-2) 100%);
   border-bottom: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.page-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(
+    180deg,
+    var(--accent) 0%,
+    transparent 85%
+  );
+  opacity: 0.85;
+  z-index: 0;
 }
 
 .page-hero__inner {
+  position: relative;
+  z-index: 1;
   display: grid;
-  gap: 0.85rem;
-  max-width: 40rem;
+  gap: 0.95rem;
+  max-width: 42rem;
 }
 
 .page-hero h1 {
-  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-size: clamp(2.1rem, 4.6vw, 3.35rem);
+  letter-spacing: -0.04em;
+  max-width: 18ch;
+}
+
+.page-hero .lede {
+  max-width: 42ch;
+  font-size: clamp(1.02rem, 1.4vw, 1.12rem);
+}
+
+.page-hero--blog {
+  background:
+    radial-gradient(80% 60% at 0% 0%, var(--accent-mist), transparent 50%),
+    linear-gradient(180deg, var(--paper-muted) 0%, var(--paper-2) 100%);
+}
+
+.page-hero--blog::before {
+  opacity: 0.55;
 }
 
 .prose {
   display: grid;
-  gap: 1rem;
+  gap: 1.1rem;
   max-width: 44rem;
 }
 
 .prose p {
   color: var(--ink-soft);
   font-size: 1.05rem;
+  line-height: 1.65;
 }
 
 .detail-points {
-  margin: 1.5rem 0 0;
+  margin: 1.75rem 0 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 0.75rem;
-  max-width: 40rem;
+  gap: 0;
+  max-width: 42rem;
 }
 
 .detail-points li {
-  padding: 0.9rem 0;
+  padding: 1rem 0;
   border-top: 1px solid var(--line);
   color: var(--ink-soft);
   font-weight: 500;
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+.detail-points li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 1.35rem;
+  width: 0.35rem;
+  height: 0.35rem;
+  background: var(--accent);
+  border-radius: 0.05rem;
 }
 
 .detail-points li:last-child {
@@ -947,14 +999,28 @@
   gap: 1.5rem;
 }
 
+.cta-band__copy {
+  display: grid;
+  gap: 0.75rem;
+  max-width: 36rem;
+}
+
 .cta-band h2 {
   font-size: clamp(1.65rem, 3.2vw, 2.35rem);
   max-width: 16ch;
   letter-spacing: -0.035em;
 }
 
+.cta-band .lede {
+  max-width: 36ch;
+}
+
 .section--ink .cta-band .lede {
   color: var(--ink-soft);
+}
+
+.section--muted .cta-band .btn--dark {
+  border-color: var(--line-strong);
 }
 
 .contact-layout {
@@ -966,11 +1032,18 @@
 
 .contact-shell {
   max-width: 34rem;
+  padding-top: 0.25rem;
 }
 
 .contact-form--solo {
   border-top: none;
   padding-top: 0;
+  gap: 1rem;
+}
+
+.contact-form .btn {
+  justify-self: start;
+  margin-top: 0.35rem;
 }
 
 .channel-list {
@@ -1075,11 +1148,31 @@
   font-size: var(--text-small);
 }
 
+.form-note--error {
+  color: color-mix(in srgb, var(--danger) 85%, white);
+}
+
 .form-success {
-  padding: 1rem 0;
+  padding: 1.25rem 0;
   border-top: 1px solid var(--line);
   display: grid;
-  gap: 0.5rem;
+  gap: 0.65rem;
+}
+
+.form-success h2 {
+  font-size: clamp(1.35rem, 2.5vw, 1.6rem);
+  letter-spacing: -0.03em;
+}
+
+.program-grid article p {
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+  line-height: 1.55;
+}
+
+.program-grid h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.025em;
 }
 
 /* Footer — Atlas Ink */

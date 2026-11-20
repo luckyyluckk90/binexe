@@ -18,11 +18,9 @@ export function CtaBand({
   return (
     <section className={`section section--${tone}`}>
       <div className="wrap cta-band">
-        <div>
+        <div className="cta-band__copy">
           <h2>{title}</h2>
-          <p className="lede" style={{ marginTop: '0.75rem', maxWidth: '36ch' }}>
-            {text}
-          </p>
+          <p className="lede">{text}</p>
         </div>
         <Link
           className={`btn ${tone === 'ink' ? 'btn--primary' : 'btn--dark'}`}
