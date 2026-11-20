@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
 import { Avatar } from './Avatar'
@@ -20,11 +20,21 @@ function navItemActive(to: string, pathname: string, hash: string) {
 
 export function Header() {
   const [open, setOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const location = useLocation()
   const { confirmed, loading, user } = useAuth()
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <header className="site-header">
+    <header
+      className={`site-header${scrolled ? ' site-header--scrolled' : ''}`}
+    >
       <div className="wrap site-header__inner">
         <Link className="logo" to="/" onClick={() => setOpen(false)}>
           Bin<span>exe</span>

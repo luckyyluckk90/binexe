@@ -27,9 +27,10 @@ function toneFrom(seed: string) {
   for (let i = 0; i < seed.length; i += 1) {
     hash = (hash + seed.charCodeAt(i) * (i + 17)) % 360
   }
-  const hue = 150 + (hash % 40) // teal/slate range matching brand
+  // Teal/slate range — Atlas Ink, restrained (not purple)
+  const hue = 158 + (hash % 28)
   return {
-    background: `linear-gradient(145deg, hsl(${hue} 42% 34%) 0%, hsl(${hue + 12} 38% 22%) 100%)`,
+    background: `linear-gradient(145deg, hsl(${hue} 38% 28%) 0%, hsl(${hue + 10} 32% 16%) 100%)`,
   }
 }
 
