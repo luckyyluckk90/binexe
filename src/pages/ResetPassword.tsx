@@ -120,10 +120,7 @@ export function ResetPassword() {
         <div className="wrap auth-shell">
           {!ready ? (
             <>
-              <p
-                className="lede"
-                style={failed ? { color: '#8b1e1e' } : undefined}
-              >
+              <p className={`lede${failed ? ' lede--error' : ''}`}>
                 {message}
               </p>
               {failed ? (
@@ -162,7 +159,7 @@ export function ResetPassword() {
                 />
               </div>
               {error ? (
-                <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
+                <p className="form-note form-note--error" role="alert">
                   {error}
                 </p>
               ) : null}

@@ -145,7 +145,7 @@ export function Signup() {
                 aşağıdaki butonla tekrar gönderin.
               </p>
               {error ? (
-                <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
+                <p className="form-note form-note--error" role="alert">
                   {error}
                 </p>
               ) : null}
@@ -204,7 +204,7 @@ export function Signup() {
                 doğrulama linkine tıkladıktan sonra açılır.
               </p>
               {error ? (
-                <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
+                <p className="form-note form-note--error" role="alert">
                   {error}
                 </p>
               ) : null}
