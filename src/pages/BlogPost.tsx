@@ -23,7 +23,7 @@ export function BlogPost() {
   return (
     <>
       <section className="page-hero page-hero--blog">
-        <div className="wrap page-hero__inner" style={{ maxWidth: '46rem' }}>
+        <div className="wrap page-hero__inner page-hero__inner--article">
           <p className="eyebrow">{post.category}</p>
           <h1>{post.title}</h1>
           <p className="blog-meta">{formatDate(post.date)}</p>
@@ -46,7 +46,7 @@ export function BlogPost() {
               <p key={paragraph}>{paragraph}</p>
             ))}
           </div>
-          <div className="cta-row" style={{ marginTop: '1.5rem' }}>
+          <div className="cta-row">
             <Link className="btn btn--ghost" to="/blog">
               Back to blog
             </Link>
