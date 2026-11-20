@@ -133,18 +133,33 @@
 
 .auth-shell {
   max-width: 28rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.auth-shell .contact-form,
+.auth-shell .auth-form,
+.profile-shell .contact-form,
+.profile-shell .auth-form {
+  gap: 1rem;
+}
+
+.auth-shell .btn,
+.profile-shell .btn {
+  justify-self: start;
 }
 
 .profile-shell {
   max-width: 34rem;
   display: grid;
-  gap: 0.25rem;
+  gap: 1.25rem;
 }
 
 .profile-summary {
   display: grid;
-  gap: 0.55rem;
-  padding-bottom: 0.35rem;
+  gap: 0.65rem;
+  padding: 0 0 1rem;
+  border-bottom: 1px solid var(--line);
 }
 
 .profile-identity {
@@ -238,25 +253,36 @@
 }
 
 .profile-form__title {
-  font-size: 1.15rem;
-  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem;
 }
 
 .not-found {
-  min-height: min(70svh, 640px);
+  min-height: min(72svh, 680px);
   display: grid;
   align-items: center;
+  background:
+    radial-gradient(70% 50% at 0% 0%, var(--accent-mist), transparent 55%),
+    var(--paper-2);
 }
 
 .not-found__inner {
   display: grid;
-  gap: 1rem;
+  gap: 1.1rem;
   max-width: 36rem;
-  padding: 2rem 0 1rem;
+  padding: 2.5rem 0 1.5rem;
 }
 
 .not-found h1 {
-  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  font-size: clamp(2.4rem, 5.5vw, 3.6rem);
+  letter-spacing: -0.045em;
+  max-width: 12ch;
+}
+
+.not-found .lede {
+  max-width: 38ch;
 }
 
 .toast-stack {
@@ -1258,27 +1284,54 @@
   max-width: 28ch;
 }
 
+.legal-prose {
+  max-width: var(--measure);
+}
+
 .legal-prose h2 {
-  margin-top: 1.75rem;
-  font-size: 1.35rem;
+  margin-top: 2rem;
+  font-size: clamp(1.25rem, 2vw, 1.45rem);
+  letter-spacing: -0.025em;
+  color: var(--ink);
 }
 
 .legal-prose h3 {
-  margin-top: 1.1rem;
+  margin-top: 1.25rem;
   font-size: 1.08rem;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.legal-prose p {
+  max-width: var(--measure);
 }
 
 .legal-prose ul {
-  margin: 0.5rem 0 0;
+  margin: 0.55rem 0 0;
   padding-left: 1.15rem;
   color: var(--ink-soft);
   display: grid;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .legal-prose a:not(.btn) {
   color: var(--accent);
   font-weight: 600;
+}
+
+.legal-prose a:not(.btn):hover {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.legal-prose .form-note {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.lede--error {
+  color: color-mix(in srgb, var(--danger) 85%, white);
 }
 
 .site-footer ul {

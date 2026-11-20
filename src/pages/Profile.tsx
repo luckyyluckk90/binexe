@@ -163,7 +163,7 @@ export function Profile() {
               />
             </div>
             {profileError ? (
-              <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
+              <p className="form-note form-note--error" role="alert">
                 {profileError}
               </p>
             ) : null}
@@ -203,7 +203,7 @@ export function Profile() {
               />
             </div>
             {passwordError ? (
-              <p className="form-note" role="alert" style={{ color: '#8b1e1e' }}>
+              <p className="form-note form-note--error" role="alert">
                 {passwordError}
               </p>
             ) : null}

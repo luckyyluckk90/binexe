@@ -143,7 +143,7 @@ export function AuthCallback() {
       />
       <section className="section section--paper">
         <div className="wrap auth-shell">
-          <p className="lede" style={failed ? { color: '#8b1e1e' } : undefined}>
+          <p className={`lede${failed ? ' lede--error' : ''}`}>
             {message}
           </p>
           {failed ? (
